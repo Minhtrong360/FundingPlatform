@@ -34,7 +34,7 @@ const ReusableChart = ({
       toolbar: {
         show: false,
         tools: {
-          download: false,
+          download: true,
         },
       },
     },
@@ -85,9 +85,7 @@ const ReusableChart = ({
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          {footerText}
-        </div>
+        <div className="flex gap-2 font-medium leading-none">{footerText}</div>
         <div className="leading-none text-muted-foreground text-gray-500">
           {footerSubText}
         </div>

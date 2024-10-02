@@ -937,12 +937,7 @@ function CashFlowSection({ numberOfMonths }) {
             <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
               <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
                 <div className="min-w-[10vw] w-full flex flex-row sm:!mr-0 !mr-1">
-                  <label
-                    htmlFor="startMonthSelect"
-                    className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
-                  >
-                    From:
-                  </label>
+                 
                   <Select
                     value={chartStartMonth}
                     onValueChange={(value) => {
@@ -974,7 +969,7 @@ function CashFlowSection({ numberOfMonths }) {
                     htmlFor="endMonthSelect"
                     className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
                   >
-                    To:
+                  -
                   </label>
                   <Select
                     value={chartEndMonth}
@@ -1061,7 +1056,7 @@ function CashFlowSection({ numberOfMonths }) {
                       <div className="text-2xl font-bold">{metric.value}</div>
                       <p className="text-xs text-muted-foreground">
                         {metric.change
-                          ? `${metric.change} from last period`
+                          ? `${metric.change}% from last period`
                           : ""}
                       </p>
                     </CardContent>

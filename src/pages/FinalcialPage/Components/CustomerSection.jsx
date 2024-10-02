@@ -737,7 +737,7 @@ const CustomerSection = React.memo(
             const eventName = channel?.eventName || "";
 
             const tooltipTitle = isInEvent
-              ? `Local Growth Rate: ${growthRate}%\nEvent: ${eventName}`
+              ? `Local Growth Rate: ${growthRate}\nEvent: ${eventName}`
               : "";
 
             const cellStyle = isInEvent ? { backgroundColor: "yellow" } : {};
@@ -890,7 +890,7 @@ const CustomerSection = React.memo(
         setIsLoading(false);
       }
     };
-
+    console.log("customerGrowthChart", customerGrowthChart);
     useEffect(() => {
       const startIdx = chartStartMonth - 1;
       const endIdx = chartEndMonth;
@@ -906,8 +906,13 @@ const CustomerSection = React.memo(
       );
 
       const seriesData = tempCustomerGrowthData.map((channelData) => {
+        const netCustomerAdd = channelData
+          .slice(startIdx, endIdx)
+          .map((data) => parseInt(data.add, 10) - parseInt(data.churn, 10));
+
         return {
           name: channelData[0]?.channelName || "Unknown Channel",
+          dataNetAdd: netCustomerAdd,
           dataBegin: channelData
             .slice(startIdx, endIdx)
             .map((data) => parseInt(data.begin, 10)),
@@ -1016,6 +1021,46 @@ const CustomerSection = React.memo(
                 ...prevState.options,
                 chart: {
                   ...prevState.options.chart,
+                  id: "netCustomerAdd",
+                  stacked: false,
+                  animated: false,
+                  legend: {
+                    show: false,
+                  },
+                },
+                xaxis: {
+                  axisTicks: {
+                    show: false,
+                  },
+                  labels: {
+                    show: false,
+                    rotate: 0,
+                    style: {
+                      fontFamily: "Raleway Variable, sans-serif",
+                      fontWeight: 500,
+                    },
+                  },
+                  categories: filteredCategories,
+                },
+                title: {
+                  ...prevState.options.title,
+                  text: "Net Customer Add (Add - Churn)",
+                  style: {
+                    fontSize: "14px",
+                    fontFamily: "Raleway Variable, sans-serif",
+                  },
+                },
+              },
+              series: seriesData.map((channel) => ({
+                name: channel.name,
+                data: channel.dataNetAdd,
+              })),
+            },
+            {
+              options: {
+                ...prevState.options,
+                chart: {
+                  ...prevState.options.chart,
                   id: "allChannels",
                   stacked: false,
                   animated: false,
@@ -1034,16 +1079,17 @@ const CustomerSection = React.memo(
                     rotate: 0,
                     style: {
                       fontFamily: "Raleway Variable, sans-serif",
+                      fontWeight: 500,
                     },
                   },
                   categories: filteredCategories,
-                  title: {
-                    text: "Month",
-                    style: {
-                      fontSize: "12px",
-                      fontFamily: "Raleway Variable, sans-serif",
-                    },
-                  },
+                  // title: {
+                  //   text: "Month",
+                  //   style: {
+                  //     fontSize: "13px",
+                  //     fontFamily: "Raleway Variable, sans-serif",
+                  //   },
+                  // },
                 },
                 title: {
                   ...prevState.options.title,
@@ -1074,16 +1120,17 @@ const CustomerSection = React.memo(
                     rotate: 0,
                     style: {
                       fontFamily: "Raleway Variable, sans-serif",
+                      fontWeight: 500,
                     },
                   },
                   categories: filteredCategories,
-                  title: {
-                    text: "Month",
-                    style: {
-                      fontSize: "12px",
-                      fontFamily: "Raleway Variable, sans-serif",
-                    },
-                  },
+                  // title: {
+                  //   text: "Month",
+                  //   style: {
+                  //     fontSize: "13px",
+                  //     fontFamily: "Raleway Variable, sans-serif",
+                  //   },
+                  // },
                 },
                 title: {
                   ...prevState.options.title,
@@ -1119,18 +1166,30 @@ const CustomerSection = React.memo(
                   id: "yearlyTotal",
                   stacked: false,
                   toolbar: {
-                    show: false,
+                    show: true,
                     tools: {
-                      download: false,
+                      download: true,
                     },
                   },
                 },
                 title: {
                   ...prevState.options.title,
                   text: "Total Customers",
+                  style: {
+                    fontFamily: "Raleway Variable, sans-serif",
+                    fontSize: "13px",
+                  },
                 },
                 xaxis: {
                   ...prevState.options.xaxis,
+                  labels: {
+                    show: true,
+                    rotate: 0,
+                    style: {
+                      fontFamily: "Raleway Variable, sans-serif",
+                      fontWeight: 500,
+                    },
+                  },
                   categories: Array.from(
                     { length: yearlyTotalData.length },
                     (_, i) => {
@@ -1138,14 +1197,31 @@ const CustomerSection = React.memo(
                       return `${year}`;
                     }
                   ),
+                  // title: {
+                  //   text: "Year",
+                  //   style: {
+                  //     fontSize: "13px",
+                  //     fontFamily: "Raleway Variable, sans-serif",
+                  //     fontWeight: 700,
+                  //   },
+                  // },
                 },
                 yaxis: {
-                  title: {
-                    text: "Total Customers",
-                  },
+                  // title: {
+                  //   text: "Total Customers",
+                  //   style: {
+                  //     fontFamily: "Raleway Variable, sans-serif",
+                  //     fontSize: "13px",
+                  //   },
+                  // },
                   min: 0, // Đặt giá trị tối thiểu của trục Oy là 0
                   labels: {
                     formatter: (value) => `${formatNumber(value.toFixed(0))}`,
+                    style: {
+                      fontFamily: "Raleway Variable, sans-serif",
+                      fontWeight: 500,
+                      fontSize: "13px",
+                    },
                   },
                 },
               },
@@ -1173,6 +1249,10 @@ const CustomerSection = React.memo(
                 title: {
                   ...prevState.options.title,
                   text: "Growth Rate",
+                  style: {
+                    fontFamily: "Raleway Variable, sans-serif",
+                    fontSize: "13px",
+                  },
                 },
                 xaxis: {
                   ...prevState.options.xaxis,
@@ -1183,14 +1263,31 @@ const CustomerSection = React.memo(
                       return `${year}`;
                     }
                   ),
+                  // title: {
+                  //   text: "Year",
+                  //   style: {
+                  //     fontSize: "13px",
+                  //     fontFamily: "Raleway Variable, sans-serif",
+                  //     fontWeight: 700,
+                  //   },
+                  // },
                 },
                 yaxis: {
-                  title: {
-                    text: "Growth Rate (%)",
-                  },
+                  // title: {
+                  //   text: "Growth Rate (%)",
+                  //   style: {
+                  //     fontFamily: "Raleway Variable, sans-serif",
+                  //     fontSize: "13px",
+                  //   },
+                  // },
                   min: 0, // Đặt giá trị tối thiểu của trục Oy là 0
                   labels: {
-                    formatter: (value) => `${value.toFixed(0)}%`,
+                    formatter: (value) => `${value.toFixed(0)}`,
+                    style: {
+                      fontFamily: "Raleway Variable, sans-serif",
+                      fontWeight: 500,
+                      fontSize: "13px",
+                    },
                   },
                 },
               },
@@ -1228,6 +1325,14 @@ const CustomerSection = React.memo(
                       return `${year}`;
                     }
                   ),
+                  // title: {
+                  //   text: "Year",
+                  //   style: {
+                  //     fontSize: "13px",
+                  //     fontFamily: "Raleway Variable, sans-serif",
+                  //     fontWeight: 700,
+                  //   },
+                  // },
                 },
               },
               series: channelYearlyTotals,
@@ -1481,17 +1586,17 @@ const CustomerSection = React.memo(
           {
             ...prevMetrics[3],
             value: formatNumber(addedUsersTotal),
-            change: `${addedUsersChange.toFixed(2)}%`,
+            change: `${addedUsersChange.toFixed(2)}`,
           },
           {
             ...prevMetrics[4],
             value: formatNumber(churnedUsersTotal),
-            change: `${churnedUsersChange.toFixed(2)}%`,
+            change: `${churnedUsersChange.toFixed(2)}`,
           },
           {
             ...prevMetrics[5],
             value: formatNumber(totalUsersTotal),
-            change: `${totalUsersChange.toFixed(2)}%`,
+            change: `${totalUsersChange.toFixed(2)}`,
           },
           { ...prevMetrics[6], value: "", change: "" },
         ]);
@@ -1565,24 +1670,24 @@ const CustomerSection = React.memo(
             {
               ...prevMetrics[0],
               value: formatNumber(existingCustomers),
-              change: `+0%`,
+              change: 0,
             },
             { ...prevMetrics[1], value: tempCustomerInputs.length, change: "" },
             { ...prevMetrics[2], value: beginUsers, change: "" },
             {
               ...prevMetrics[3],
               value: formatNumber(addedUsers),
-              change: `${addedUsersChange.toFixed(2)}%`,
+              change: `${addedUsersChange.toFixed(2)}`,
             },
             {
               ...prevMetrics[4],
               value: formatNumber(churnedUsers),
-              change: `${churnedUsersChange.toFixed(2)}%`,
+              change: `${churnedUsersChange.toFixed(2)}`,
             },
             {
               ...prevMetrics[5],
               value: formatNumber(totalUsers),
-              change: `${totalUsersChange.toFixed(2)}%`,
+              change: `${formatNumber(totalUsersChange.toFixed(2))}`,
             },
             { ...prevMetrics[6], value: "", change: "" },
           ]);
@@ -1637,12 +1742,6 @@ const CustomerSection = React.memo(
 
                 <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
                   <div className="min-w-[10vw] w-full flex flex-row sm:!mr-0 !mr-1">
-                    <label
-                      htmlFor="startMonthSelect"
-                      className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
-                    >
-                      From:
-                    </label>
                     <Select
                       value={chartStartMonth}
                       onValueChange={(value) => {
@@ -1674,7 +1773,7 @@ const CustomerSection = React.memo(
                       htmlFor="endMonthSelect"
                       className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
                     >
-                      To:
+                      -
                     </label>
                     <Select
                       value={chartEndMonth}
@@ -1765,7 +1864,7 @@ const CustomerSection = React.memo(
                           {metric.change
                             ? `${
                                 metric.change
-                                  ? `${metric.change} from last period`
+                                  ? `${metric.change}% from last period`
                                   : ""
                               }`
                             : ""}

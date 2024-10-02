@@ -457,7 +457,9 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         },
         labels: {
           style: {
+            fontSize: "13px",
             fontFamily: "Raleway Variable, sans-serif",
+            fontWeight: 500,
           },
           rotate: 0,
         },
@@ -466,13 +468,13 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
           return `${months[monthIndex]}/${year}`;
         }),
-        title: {
-          text: "Month",
-          style: {
-            fontFamily: "Raleway Variable, sans-serif",
-            fontsize: "12px",
-          },
-        },
+        // title: {
+        //   text: "Month",
+        //   style: {
+        //     fontFamily: "Raleway Variable, sans-serif",
+        //     fontSize: "13px",
+        //   },
+        // },
       },
       yaxis: {
         axisBorder: {
@@ -481,24 +483,28 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         min: 0, // Đặt giá trị tối thiểu của trục Oy là 0
         labels: {
           style: {
+            fontSize: "13px",
             fontFamily: "Raleway Variable, sans-serif",
+            fontWeight: 500,
           },
           formatter: function (val) {
             return formatNumber(Math.floor(val));
           },
         },
-        title: {
-          text: "Fundraising Amount ($)",
-          style: {
-            fontFamily: "Raleway Variable, sans-serif",
-            fontsize: "12px",
-          },
-        },
+        // title: {
+        //   text: "Fundraising Amount ($)",
+        //   style: {
+        //     fontFamily: "Raleway Variable, sans-serif",
+        //     fontSize: "13px",
+        //   },
+        // },
       },
       legend: {
         position: "bottom",
         horizontalAlign: "right",
         fontFamily: "Raleway Variable, sans-serif",
+        fontSize: "13px",
+        fontWeight: 500,
       },
       dataLabels: { enabled: false },
       stroke: { width: 1, curve: "smooth" },
@@ -893,12 +899,6 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
               <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
                 <div className="min-w-[10vw] w-full flex flex-row sm:!mr-0 !mr-1">
-                  <label
-                    htmlFor="startMonthSelect"
-                    className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
-                  >
-                    From:
-                  </label>
                   <Select
                     value={chartStartMonth}
                     onValueChange={(value) => {
@@ -930,7 +930,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                     htmlFor="endMonthSelect"
                     className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
                   >
-                    To:
+                    -
                   </label>
                   <Select
                     value={chartEndMonth}
@@ -1045,7 +1045,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                       <div className="text-2xl font-bold">{metric.value}</div>
                       <p className="text-xs text-muted-foreground">
                         {metric.change
-                          ? `${metric.change} from last period`
+                          ? `${metric.change}% from last period`
                           : ""}
                       </p>
                     </CardContent>

@@ -228,6 +228,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     options: {
       chart: {
         fontFamily: "Raleway Variable, sans-serif",
+        fontWeight: 500,
         zoom: {
           enabled: false, // Disable zooming
         },
@@ -256,6 +257,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           rotate: 0,
           style: {
             fontFamily: "Raleway Variable, sans-serif",
+            fontWeight: 500,
           },
         },
         categories: Array.from({ length: numberOfMonths }, (_, i) => {
@@ -263,13 +265,14 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           const year = startYear + Math.floor((startMonth + i - 1) / 12);
           return `${months[monthIndex]}/${year}`;
         }),
-        title: {
-          text: "Month",
-          style: {
-            fontSize: "12px",
-            fontFamily: "Raleway Variable, sans-serif",
-          },
-        },
+        // title: {
+        //   text: "Month",
+        //   style: {
+        //     fontFamily: "Raleway Variable, sans-serif",
+        //     fontSize: "13px",
+        //     fontWeight: 500,
+        //   },
+        // },
       },
       yaxis: {
         axisBorder: {
@@ -279,25 +282,29 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         labels: {
           style: {
             fontFamily: "Raleway Variable, sans-serif",
+            fontWeight: 500,
+            fontSize: "13px",
           },
           show: true,
           formatter: function (val) {
             return formatNumber(Math.floor(val));
           },
         },
-        title: {
-          text: "Customers",
-          style: {
-            fontFamily: "Raleway Variable, sans-serif",
-            fontSize: "12px",
-          },
-        },
+        // title: {
+        //   text: "Customers",
+        //   style: {
+        //     fontFamily: "Raleway Variable, sans-serif",
+        //     fontSize: "13px",
+        //   },
+        // },
       },
 
       legend: {
         position: "bottom",
         horizontalAlign: "right",
         fontFamily: "Raleway Variable, sans-serif",
+        fontWeight: 500,
+        fontSize: "13px",
       },
 
       grid: {
@@ -329,6 +336,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     options: {
       chart: {
         fontFamily: "Raleway Variable, sans-serif",
+        fontWeight: 500,
         id: "revenue-chart",
         type: "bar",
         height: 350,
@@ -361,6 +369,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         position: "bottom",
         horizontalAlign: "right",
         fontFamily: "Raleway Variable, sans-serif",
+        fontWeight: 500,
+        fontSize: "13px",
       },
 
       xaxis: {
@@ -372,6 +382,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           rotate: 0,
           style: {
             fontFamily: "Raleway Variable, sans-serif",
+            fontWeight: 500,
+            fontSize: "13px",
           },
         },
         categories: Array.from({ length: numberOfMonths }, (_, i) => {
@@ -379,13 +391,14 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           const year = startYear + Math.floor((startMonth + i - 1) / 12);
           return `${months[monthIndex]}/${year}`;
         }),
-        title: {
-          text: "Month",
-          style: {
-            fontSize: "12px",
-            fontFamily: "Raleway Variable, sans-serif",
-          },
-        },
+        // title: {
+        //   text: "Month",
+        //   style: {
+        //     fontSize: "13px",
+        //     fontFamily: "Raleway Variable, sans-serif",
+        //     fontWeight: 500,
+        //   },
+        // },
       },
       yaxis: {
         axisBorder: {
@@ -396,18 +409,20 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           show: true,
           style: {
             fontFamily: "Raleway Variable, sans-serif",
+            fontWeight: 500,
+            fontSize: "13px",
           },
           formatter: function (val) {
             return formatNumber(Math.floor(val));
           },
         },
-        title: {
-          text: "Amount ($)",
-          style: {
-            fontSize: "12px",
-            fontFamily: "Raleway Variable, sans-serif",
-          },
-        },
+        // title: {
+        //   text: "Amount ($)",
+        //   style: {
+        //     fontSize: "13px",
+        //     fontFamily: "Raleway Variable, sans-serif",
+        //   },
+        // },
       },
 
       dataLabels: { enabled: false },

@@ -671,13 +671,13 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
                   style: { fontFamily: "Raleway Variable, sans-serif" },
                 },
                 categories: filteredCategories,
-                title: {
-                  text: "Month",
-                  style: {
-                    fontSize: "12px",
-                    fontFamily: "Raleway Variable, sans-serif",
-                  },
-                },
+                // title: {
+                //   text: "Month",
+                //   style: {
+                //     fontSize: "12px",
+                //     fontFamily: "Raleway Variable, sans-serif",
+                //   },
+                // },
               },
               title: { ...prevState.options.title, text: "All Revenues" },
             },
@@ -701,13 +701,13 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
                   style: { fontFamily: "Raleway Variable, sans-serif" },
                 },
                 categories: filteredCategories,
-                title: {
-                  text: "Month",
-                  style: {
-                    fontSize: "12px",
-                    fontFamily: "Raleway Variable, sans-serif",
-                  },
-                },
+                // title: {
+                //   text: "Month",
+                //   style: {
+                //     fontSize: "12px",
+                //     fontFamily: "Raleway Variable, sans-serif",
+                //   },
+                // },
               },
               title: { ...prevState.options.title, text: channelSeries.name },
             },
@@ -1148,12 +1148,6 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
 
               <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
                 <div className="min-w-[10vw] w-full flex flex-row sm:!mr-0 !mr-1">
-                  <label
-                    htmlFor="startMonthSelect"
-                    className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
-                  >
-                    From:
-                  </label>
                   <Select
                     value={chartStartMonth}
                     onValueChange={(value) => {
@@ -1185,7 +1179,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
                     htmlFor="endMonthSelect"
                     className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
                   >
-                    To:
+                    -
                   </label>
                   <Select
                     value={chartEndMonth}
@@ -1273,7 +1267,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
                       <div className="text-2xl font-bold">{metric.value}</div>
                       <p className="text-xs text-muted-foreground">
                         {metric.change
-                          ? `${metric.change} from last period`
+                          ? `${metric.change}% from last period`
                           : ""}
                       </p>
                     </CardContent>

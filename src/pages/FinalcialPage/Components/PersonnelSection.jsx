@@ -431,6 +431,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
         },
         zoom: { enabled: false },
         fontFamily: "Raleway Variable, sans-serif",
+        fontWeight: 500,
         animations: {
           enabled: false,
         },
@@ -451,20 +452,23 @@ const PersonnelSection = ({ numberOfMonths }) => {
         labels: {
           show: true,
           rotate: 0,
-          style: { fontFamily: "Raleway Variable, sans-serif" },
+          style: {
+            fontFamily: "Raleway Variable, sans-serif",
+            fontWeight: 500,
+          },
         },
         categories: Array.from({ length: numberOfMonths }, (_, i) => {
           const monthIndex = (startingMonth + i - 1) % 12;
           const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
           return `${months[monthIndex]}/${year}`;
         }),
-        title: {
-          text: "Month",
-          style: {
-            fontFamily: "Raleway Variable, sans-serif",
-            fontsize: "12px",
-          },
-        },
+        // title: {
+        //   text: "Month",
+        //   style: {
+        //     fontFamily: "Raleway Variable, sans-serif",
+        //     fontSize: "13px",
+        //   },
+        // },
       },
       yaxis: {
         min: 0,
@@ -473,23 +477,29 @@ const PersonnelSection = ({ numberOfMonths }) => {
         },
         labels: {
           show: true,
-          style: { fontFamily: "Raleway Variable, sans-serif" },
+          style: {
+            fontFamily: "Raleway Variable, sans-serif",
+            fontWeight: 500,
+            fontSize: "13px",
+          },
           formatter: function (val) {
             return formatNumber(Math.floor(val));
           },
         },
-        title: {
-          text: "Salary ($)",
-          style: {
-            fontFamily: "Raleway Variable, sans-serif",
-            fontsize: "12px",
-          },
-        },
+        // title: {
+        //   text: "Salary ($)",
+        //   style: {
+        //     fontFamily: "Raleway Variable, sans-serif",
+        //     fontSize: "13px",
+        //   },
+        // },
       },
       legend: {
         position: "bottom",
         horizontalAlign: "right",
         fontFamily: "Raleway Variable, sans-serif",
+        fontWeight: 500,
+        fontSize: "13px",
       },
       dataLabels: { enabled: false },
       stroke: { width: 1, curve: "straight" },
@@ -896,12 +906,6 @@ const PersonnelSection = ({ numberOfMonths }) => {
 
               <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
                 <div className="min-w-[10vw] w-full flex flex-row sm:!mr-0 !mr-1">
-                  <label
-                    htmlFor="startMonthSelect"
-                    className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
-                  >
-                    From:
-                  </label>
                   <Select
                     value={chartStartMonth}
                     onValueChange={(value) => {
@@ -933,7 +937,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
                     htmlFor="endMonthSelect"
                     className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
                   >
-                    To:
+                    -
                   </label>
                   <Select
                     value={chartEndMonth}
@@ -1021,7 +1025,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
                       <div className="text-2xl font-bold">{metric.value}</div>
                       <p className="text-xs text-muted-foreground">
                         {metric.change
-                          ? `${metric.change} from last period`
+                          ? `${metric.change}% from last period`
                           : ""}
                       </p>
                     </CardContent>

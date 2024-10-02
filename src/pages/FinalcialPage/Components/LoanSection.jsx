@@ -426,6 +426,8 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           rotate: 0,
           style: {
             fontFamily: "Raleway Variable, sans-serif",
+            fontWeight: 500,
+            fontSize: "13px",
           },
         },
         axisTicks: {
@@ -436,13 +438,13 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
           return `${months[monthIndex]}/${year}`;
         }),
-        title: {
-          text: "Month",
-          style: {
-            fontFamily: "Raleway Variable, sans-serif",
-            fontsize: "12px",
-          },
-        },
+        // title: {
+        //   text: "Month",
+        //   style: {
+        //     fontFamily: "Raleway Variable, sans-serif",
+        //     fontSize: "13px",
+        //   },
+        // },
       },
       yaxis: {
         axisBorder: {
@@ -453,20 +455,27 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           formatter: function (val) {
             return formatNumber(Math.floor(val));
           },
-        },
-        title: {
-          text: "Amount ($)",
           style: {
             fontFamily: "Raleway Variable, sans-serif",
-            fontsize: "12px",
+            fontWeight: 500,
+            fontSize: "13px",
           },
         },
+        // title: {
+        //   text: "Amount ($)",
+        //   style: {
+        //     fontFamily: "Raleway Variable, sans-serif",
+        //     fontSize: "13px",
+        //   },
+        // },
       },
       grid: { show: false },
       legend: {
         position: "bottom",
         horizontalAlign: "right",
         fontFamily: "Raleway Variable, sans-serif",
+        fontSize: "13px",
+        fontWeight: 500,
       },
       dataLabels: { enabled: false },
       stroke: { width: 1, curve: "straight" },
@@ -1081,12 +1090,6 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
               <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
                 <div className="min-w-[10vw] w-full flex flex-row sm:!mr-0 !mr-1">
-                  <label
-                    htmlFor="startMonthSelect"
-                    className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
-                  >
-                    From:
-                  </label>
                   <Select
                     value={chartStartMonth}
                     onValueChange={(value) => {
@@ -1118,7 +1121,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                     htmlFor="endMonthSelect"
                     className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
                   >
-                    To:
+                    -
                   </label>
                   <Select
                     value={chartEndMonth}
@@ -1271,7 +1274,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                       <div className="text-2xl font-bold">{metric.value}</div>
                       <p className="text-xs text-muted-foreground">
                         {metric.change
-                          ? `${metric.change} from last period`
+                          ? `${metric.change}% from last period`
                           : ""}
                       </p>
                     </CardContent>

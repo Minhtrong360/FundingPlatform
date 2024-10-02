@@ -38,6 +38,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../..//components/ui/dropdown-menu";
+import { formatDate } from "../../features/DurationSlice";
 
 function ProjectList({ projects, isLoading }) {
   const { user } = useAuth();
@@ -868,17 +869,29 @@ function ProjectList({ projects, isLoading }) {
                   >
                     {project.name}
                   </TableCell>
-                  <TableCell className="hover:cursor-pointer">
-                    {new Date(project.created_at).toLocaleDateString()}
+                  <TableCell
+                    className="hover:cursor-pointer"
+                    onClick={() => handleProjectClick(project)}
+                  >
+                    {formatDate(project.created_at)}
                   </TableCell>
-                  <TableCell>{project.user_email}</TableCell>
-                  <TableCell>
+                  <TableCell
+                    className="hover:cursor-pointer"
+                    onClick={() => handleProjectClick(project)}
+                  >
+                    {project.user_email}
+                  </TableCell>
+                  <TableCell
+                    className="hover:cursor-pointer"
+                    onClick={() => handleProjectClick(project)}
+                  >
                     <Badge
                       className={
                         project.status.toLowerCase() === "private"
-                          ? "bg-red-600 text-white"
-                          : "bg-black text-white"
+                          ? "bg-red-600 text-white hover:cursor-pointer"
+                          : "bg-black text-white hover:cursor-pointer"
                       }
+                      onClick={() => handleProjectClick(project)}
                     >
                       {project?.status.trim().charAt(0).toUpperCase() +
                         project?.status.slice(1)}

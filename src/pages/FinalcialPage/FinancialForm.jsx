@@ -275,7 +275,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         axisBorder: {
           show: true, // Show y-axis line
         },
-
+        min: 0, // Đặt giá trị tối thiểu của trục Oy là 0
         labels: {
           style: {
             fontFamily: "Raleway Variable, sans-serif",
@@ -391,7 +391,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         axisBorder: {
           show: true, // Show y-axis line
         },
-
+        min: 0, // Đặt giá trị tối thiểu của trục Oy là 0
         labels: {
           show: true,
           style: {

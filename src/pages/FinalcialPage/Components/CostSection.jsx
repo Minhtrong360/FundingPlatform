@@ -876,13 +876,14 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
         axisBorder: {
           show: true,
         },
+        min: 0, // Đặt giá trị tối thiểu của trục Oy là 0
         labels: {
           show: true,
           style: {
             fontFamily: "Raleway Variable, sans-serif",
           },
           formatter: function (val) {
-            return formatNumber(val.toFixed(2));
+            return formatNumber(val?.toFixed(2));
           },
         },
         title: {

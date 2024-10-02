@@ -1127,7 +1127,7 @@ const CustomerSection = React.memo(
                 },
                 title: {
                   ...prevState.options.title,
-                  text: "Yearly Total",
+                  text: "Total Customers",
                 },
                 xaxis: {
                   ...prevState.options.xaxis,
@@ -1141,8 +1141,9 @@ const CustomerSection = React.memo(
                 },
                 yaxis: {
                   title: {
-                    text: "Yearly Total",
+                    text: "Total Customers",
                   },
+                  min: 0, // Đặt giá trị tối thiểu của trục Oy là 0
                   labels: {
                     formatter: (value) => `${formatNumber(value.toFixed(0))}`,
                   },
@@ -1150,7 +1151,7 @@ const CustomerSection = React.memo(
               },
               series: [
                 {
-                  name: "Yearly Total",
+                  name: "Total Customers",
                   data: yearlyTotalData,
                 },
               ],
@@ -1171,7 +1172,7 @@ const CustomerSection = React.memo(
                 },
                 title: {
                   ...prevState.options.title,
-                  text: "Yearly Growth Rate",
+                  text: "Growth Rate",
                 },
                 xaxis: {
                   ...prevState.options.xaxis,
@@ -1185,18 +1186,18 @@ const CustomerSection = React.memo(
                 },
                 yaxis: {
                   title: {
-                    text: "Yearly Growth Rate (%)",
+                    text: "Growth Rate (%)",
                   },
+                  min: 0, // Đặt giá trị tối thiểu của trục Oy là 0
                   labels: {
-                    formatter: (value) => `${value.toFixed(2)}%`,
+                    formatter: (value) => `${value.toFixed(0)}%`,
                   },
                 },
               },
               series: [
                 {
-                  name: "Yearly Growth Rate (%)",
+                  name: "Growth Rate (%)",
                   data: yearlyGrowthRates,
-                  type: "line",
                 },
               ],
             },
@@ -1216,7 +1217,7 @@ const CustomerSection = React.memo(
                 },
                 title: {
                   ...prevState.options.title,
-                  text: "Total Yearly Customers by Channel",
+                  text: "Customers By Channel",
                 },
                 xaxis: {
                   ...prevState.options.xaxis,
@@ -1777,74 +1778,74 @@ const CustomerSection = React.memo(
           </section>
 
           {/* <h3 className="text-lg font-semibold mb-4">II. Customer Chart</h3> */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {renderCustomerForm === "all" &&
+              customerGrowthChart?.charts.map((chart, index) => (
+                <div key={index} className="my-4">
+                  <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
 
-          {renderCustomerForm === "all" &&
-            customerGrowthChart?.charts.map((chart, index) => (
-              <div key={index} className="my-4">
-                <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
-
-                <CardShadcn
-                  key={index}
-                  className="flex flex-col transition duration-500 !rounded-md relative"
-                >
-                  <CardHeader>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute top-2 right-2 z-50"
-                      onClick={(event) => handleChartClick(chart, event)}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="w-4 h-4"
+                  <CardShadcn
+                    key={index}
+                    className="flex flex-col transition duration-500 !rounded-md relative"
+                  >
+                    <CardHeader>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-2 z-50"
+                        onClick={(event) => handleChartClick(chart, event)}
                       >
-                        <path d="M15 3h6v6" />
-                        <path d="M10 14 21 3" />
-                        <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                      </svg>
-                      <span className="sr-only">Fullscreen</span>
-                    </Button>
-                  </CardHeader>
-                  <CardContent>
-                    <Chart
-                      options={{
-                        ...chart.options,
-                        fill: {
-                          type: "gradient",
-                          gradient: {
-                            shade: "light",
-                            shadeIntensity: 0.5,
-                            opacityFrom: 0.75,
-                            opacityTo: 0.65,
-                            stops: [0, 90, 100],
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="w-4 h-4"
+                        >
+                          <path d="M15 3h6v6" />
+                          <path d="M10 14 21 3" />
+                          <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                        </svg>
+                        <span className="sr-only">Fullscreen</span>
+                      </Button>
+                    </CardHeader>
+                    <CardContent>
+                      <Chart
+                        options={{
+                          ...chart.options,
+                          fill: {
+                            type: "gradient",
+                            gradient: {
+                              shade: "light",
+                              shadeIntensity: 0.5,
+                              opacityFrom: 0.75,
+                              opacityTo: 0.65,
+                              stops: [0, 90, 100],
+                            },
                           },
-                        },
-                        xaxis: {
-                          ...chart.options.xaxis,
-                        },
-                        stroke: {
-                          width: 1,
-                          curve: "straight",
-                        },
-                      }}
-                      series={chart.series}
-                      type="area"
-                      height={350}
-                    />
-                  </CardContent>
-                </CardShadcn>
-              </div>
-            ))}
-
-          <div className="">
+                          xaxis: {
+                            ...chart.options.xaxis,
+                          },
+                          stroke: {
+                            width: 1,
+                            curve: "straight",
+                          },
+                        }}
+                        series={chart.series}
+                        type="area"
+                        height={350}
+                      />
+                    </CardContent>
+                  </CardShadcn>
+                </div>
+              ))}
+          </div>
+          <div className="grid md:grid-cols-2 gap-6">
             {customerGrowthChart?.charts
               ?.filter(
                 (chart) =>
@@ -1971,13 +1972,14 @@ const CustomerSection = React.memo(
                         xaxis: {
                           ...chart.options.xaxis,
                         },
+
                         stroke: {
                           width: 1,
                           curve: "straight",
                         },
                       }}
                       series={chart.series}
-                      type="area"
+                      type="bar"
                       height={350}
                     />
                   </CardContent>

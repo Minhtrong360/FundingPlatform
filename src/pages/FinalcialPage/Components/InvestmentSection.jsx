@@ -478,6 +478,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         axisBorder: {
           show: true,
         },
+        min: 0, // Đặt giá trị tối thiểu của trục Oy là 0
         labels: {
           show: true,
           style: { fontFamily: "Raleway Variable, sans-serif" },
@@ -1226,73 +1227,74 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           </div>
         </section>
         {/* <h3 className="text-lg font-semibold mb-8">II. Investment Chart</h3> */}
-        {renderInvestmentForm === "all" &&
-          investmentChart?.charts?.map((chart, index) => (
-            <div key={index} className="my-4">
-              <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
+        <div className="grid md:grid-cols-2 gap-6">
+          {renderInvestmentForm === "all" &&
+            investmentChart?.charts?.map((chart, index) => (
+              <div key={index} className="my-4">
+                <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
 
-              <CardShadcn
-                key={index}
-                className="flex flex-col transition duration-500 !rounded-md relative"
-              >
-                <CardHeader>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-2 right-2 z-50"
-                    onClick={(event) => handleChartClick(chart, event)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-4 h-4"
+                <CardShadcn
+                  key={index}
+                  className="flex flex-col transition duration-500 !rounded-md relative"
+                >
+                  <CardHeader>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-2 right-2 z-50"
+                      onClick={(event) => handleChartClick(chart, event)}
                     >
-                      <path d="M15 3h6v6" />
-                      <path d="M10 14 21 3" />
-                      <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                    </svg>
-                    <span className="sr-only">Fullscreen</span>
-                  </Button>
-                </CardHeader>
-                <CardContent>
-                  <Chart
-                    options={{
-                      ...chart.options,
-                      fill: {
-                        type: "gradient",
-                        gradient: {
-                          shade: "light",
-                          shadeIntensity: 0.5,
-                          opacityFrom: 0.75,
-                          opacityTo: 0.65,
-                          stops: [0, 90, 100],
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-4 h-4"
+                      >
+                        <path d="M15 3h6v6" />
+                        <path d="M10 14 21 3" />
+                        <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                      </svg>
+                      <span className="sr-only">Fullscreen</span>
+                    </Button>
+                  </CardHeader>
+                  <CardContent>
+                    <Chart
+                      options={{
+                        ...chart.options,
+                        fill: {
+                          type: "gradient",
+                          gradient: {
+                            shade: "light",
+                            shadeIntensity: 0.5,
+                            opacityFrom: 0.75,
+                            opacityTo: 0.65,
+                            stops: [0, 90, 100],
+                          },
                         },
-                      },
-                      xaxis: {
-                        ...chart.options.xaxis,
-                      },
-                      stroke: {
-                        width: 1,
-                        curve: "straight",
-                      },
-                    }}
-                    series={chart.series}
-                    type="area"
-                    height={350}
-                  />
-                </CardContent>
-              </CardShadcn>
-            </div>
-          ))}
-
-        <div className="">
+                        xaxis: {
+                          ...chart.options.xaxis,
+                        },
+                        stroke: {
+                          width: 1,
+                          curve: "straight",
+                        },
+                      }}
+                      series={chart.series}
+                      type="area"
+                      height={350}
+                    />
+                  </CardContent>
+                </CardShadcn>
+              </div>
+            ))}
+        </div>
+        <div className="grid md:grid-cols-2 gap-6">
           {investmentChart?.charts
             ?.filter(
               (chart) =>

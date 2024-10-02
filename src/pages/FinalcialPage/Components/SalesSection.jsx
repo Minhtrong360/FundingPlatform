@@ -1284,7 +1284,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
         </section>
 
         {/* <h3 className="text-lg font-semibold mb-4">II. Revenue Chart</h3> */}
-        <div className="mt-12">
+        <div className="grid md:grid-cols-2 gap-6">
           {/* <h4 className="text-base font-semibold mb-4">1. All revenue chart</h4> */}
           {renderChannelForm === "all" &&
             revenue.charts.map((chart, index) => (
@@ -1338,7 +1338,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
               </div>
             ))}
         </div>
-        <div className="mt-12">
+        <div className="grid md:grid-cols-2 gap-6">
           {/* <h4 className="text-base font-semibold mb-4">2. Component charts</h4> */}
 
           {revenue.charts

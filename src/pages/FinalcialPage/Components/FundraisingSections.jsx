@@ -478,6 +478,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         axisBorder: {
           show: true,
         },
+        min: 0, // Đặt giá trị tối thiểu của trục Oy là 0
         labels: {
           style: {
             fontFamily: "Raleway Variable, sans-serif",

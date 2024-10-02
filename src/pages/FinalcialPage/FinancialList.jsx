@@ -504,22 +504,37 @@ function FinancialList() {
                   >
                     <Tooltip title={finance.name}>{finance.name}</Tooltip>
                   </TableCell>
-                  <TableCell className="whitespace-nowrap">
+                  <TableCell
+                    className="hover:cursor-pointer whitespace-nowrap"
+                    onClick={() => handleProjectClick(finance)}
+                  >
                     {formatDate(finance.created_at)}
                   </TableCell>
-                  <TableCell className="whitespace-nowrap truncate max-w-40">
+                  <TableCell
+                    className="hover:cursor-pointer whitespace-nowrap truncate max-w-40"
+                    onClick={() => handleProjectClick(finance)}
+                  >
                     <Tooltip title={finance.user_email}>
                       {finance.user_email}
                     </Tooltip>
                   </TableCell>
-                  <TableCell className="whitespace-nowrap">
+                  <TableCell
+                    className="hover:cursor-pointer whitespace-nowrap"
+                    onClick={() => handleProjectClick(finance)}
+                  >
                     {finance?.inputData?.industry || "Waiting for setup"}
                   </TableCell>
-                  <TableCell className="whitespace-nowrap">
+                  <TableCell
+                    className="hover:cursor-pointer whitespace-nowrap"
+                    onClick={() => handleProjectClick(finance)}
+                  >
                     {finance?.inputData?.selectedDuration ||
                       "Waiting for setup"}
                   </TableCell>
-                  <TableCell className="whitespace-nowrap">
+                  <TableCell
+                    className="hover:cursor-pointer whitespace-nowrap"
+                    onClick={() => handleProjectClick(finance)}
+                  >
                     {finance?.inputData?.startMonth &&
                     finance?.inputData?.startYear ? (
                       <>
@@ -532,7 +547,10 @@ function FinancialList() {
                       "Waiting for setup"
                     )}
                   </TableCell>
-                  <TableCell className="whitespace-nowrap">
+                  <TableCell
+                    className="hover:cursor-pointer whitespace-nowrap"
+                    onClick={() => handleProjectClick(finance)}
+                  >
                     <Tooltip title="Customer of 1st year">
                       {finance?.inputData?.yearlyAverageCustomers
                         ? formatNumber(
@@ -541,7 +559,10 @@ function FinancialList() {
                         : "Waiting for setup"}
                     </Tooltip>
                   </TableCell>
-                  <TableCell className="whitespace-nowrap">
+                  <TableCell
+                    className="hover:cursor-pointer whitespace-nowrap"
+                    onClick={() => handleProjectClick(finance)}
+                  >
                     <Tooltip title="Revenue of 1st year">
                       {finance?.inputData?.yearlySales
                         ? `${getCurrencyLabelByKey(

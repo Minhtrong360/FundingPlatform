@@ -930,14 +930,25 @@ const CustomerSection = React.memo(
             .map((data) => parseInt(data.customers, 10)),
         };
       });
+
       const seriesData2 = tempCustomerGrowthData.map((channelData) => {
         return {
           name: channelData[0]?.channelName || "Unknown Channel",
-          dataBegin: channelData.map((data) => parseInt(data.begin, 10)),
-          dataAdd: channelData.map((data) => parseInt(data.add, 10)),
-          dataChurn: channelData.map((data) => parseInt(data.churn, 10)),
-          dataEnd: channelData.map((data) => parseInt(data.end, 10)),
-          data: channelData.map((data) => parseInt(data.customers, 10)),
+          dataBegin: channelData
+            .slice(startIdx, endIdx)
+            .map((data) => parseInt(data.begin, 10)),
+          dataAdd: channelData
+            .slice(startIdx, endIdx)
+            .map((data) => parseInt(data.add, 10)),
+          dataChurn: channelData
+            .slice(startIdx, endIdx)
+            .map((data) => parseInt(data.churn, 10)),
+          dataEnd: channelData
+            .slice(startIdx, endIdx)
+            .map((data) => parseInt(data.end, 10)),
+          data: channelData
+            .slice(startIdx, endIdx)
+            .map((data) => parseInt(data.customers, 10)),
         };
       });
 
@@ -1005,6 +1016,29 @@ const CustomerSection = React.memo(
         return ((total - arr[index - 1]) / arr[index - 1]) * 100;
       });
 
+      const totalNetCustomerPerMonth = seriesData.reduce((acc, channel) => {
+        channel.dataNetAdd.forEach((netAdd, index) => {
+          if (!acc[index]) {
+            acc[index] = 0;
+          }
+          acc[index] += netAdd;
+        });
+        return acc;
+      }, []);
+
+      // Calculate pie chart data (dạng quạt)
+      const totalEndCustomersByChannel = seriesData.map((channel) => ({
+        name: channel.name,
+        value: channel.dataEnd.reduce((sum, endVal) => sum + endVal, 0),
+      }));
+
+      const pieChartSeries = totalEndCustomersByChannel.map(
+        (channel) => channel.value
+      );
+      const pieChartLabels = totalEndCustomersByChannel.map(
+        (channel) => channel.name
+      );
+
       setCustomerGrowthChart((prevState) => {
         return {
           ...prevState,
@@ -1021,49 +1055,10 @@ const CustomerSection = React.memo(
                 ...prevState.options,
                 chart: {
                   ...prevState.options.chart,
-                  id: "netCustomerAdd",
-                  stacked: false,
-                  animated: false,
-                  legend: {
-                    show: false,
-                  },
-                },
-                xaxis: {
-                  axisTicks: {
-                    show: false,
-                  },
-                  labels: {
-                    show: false,
-                    rotate: 0,
-                    style: {
-                      fontFamily: "Raleway Variable, sans-serif",
-                      fontWeight: 500,
-                    },
-                  },
-                  categories: filteredCategories,
-                },
-                title: {
-                  ...prevState.options.title,
-                  text: "Net Customer Add (Add - Churn)",
-                  style: {
-                    fontSize: "14px",
-                    fontFamily: "Raleway Variable, sans-serif",
-                  },
-                },
-              },
-              series: seriesData.map((channel) => ({
-                name: channel.name,
-                data: channel.dataNetAdd,
-              })),
-            },
-            {
-              options: {
-                ...prevState.options,
-                chart: {
-                  ...prevState.options.chart,
                   id: "allChannels",
                   stacked: false,
                   animated: false,
+                  type: "area",
 
                   legend: {
                     show: false,
@@ -1083,13 +1078,6 @@ const CustomerSection = React.memo(
                     },
                   },
                   categories: filteredCategories,
-                  // title: {
-                  //   text: "Month",
-                  //   style: {
-                  //     fontSize: "13px",
-                  //     fontFamily: "Raleway Variable, sans-serif",
-                  //   },
-                  // },
                 },
                 title: {
                   ...prevState.options.title,
@@ -1108,7 +1096,7 @@ const CustomerSection = React.memo(
                 },
               ],
             },
-            ...seriesData.map((channelSeries) => ({
+            {
               options: {
                 ...prevState.options,
                 xaxis: {
@@ -1124,38 +1112,95 @@ const CustomerSection = React.memo(
                     },
                   },
                   categories: filteredCategories,
-                  // title: {
-                  //   text: "Month",
-                  //   style: {
-                  //     fontSize: "13px",
-                  //     fontFamily: "Raleway Variable, sans-serif",
-                  //   },
-                  // },
                 },
                 title: {
                   ...prevState.options.title,
-                  text: channelSeries.name,
+                  text: "All Channels - Net Customers",
+                  style: {
+                    fontSize: "14px",
+                    fontFamily: "Raleway Variable, sans-serif",
+                  },
                 },
               },
               series: [
                 {
-                  name: "Begin",
-                  data: channelSeries.dataBegin,
-                },
-                {
-                  name: "Add",
-                  data: channelSeries.dataAdd,
-                },
-                {
-                  name: "Churn",
-                  data: channelSeries.dataChurn,
-                },
-                {
-                  name: "End",
-                  data: channelSeries.dataEnd,
+                  name: "Net Customers",
+                  data: totalNetCustomerPerMonth,
                 },
               ],
-            })),
+            },
+            ...seriesData.flatMap((channelSeries) => [
+              {
+                options: {
+                  ...prevState.options,
+                  xaxis: {
+                    axisTicks: {
+                      show: false,
+                    },
+                    labels: {
+                      show: false,
+                      rotate: 0,
+                      style: {
+                        fontFamily: "Raleway Variable, sans-serif",
+                        fontWeight: 500,
+                      },
+                    },
+                    categories: filteredCategories,
+                  },
+                  title: {
+                    ...prevState.options.title,
+                    text: channelSeries.name,
+                  },
+                },
+                series: [
+                  {
+                    name: "Begin",
+                    data: channelSeries.dataBegin,
+                  },
+                  {
+                    name: "Add",
+                    data: channelSeries.dataAdd,
+                  },
+                  {
+                    name: "Churn",
+                    data: channelSeries.dataChurn,
+                  },
+                  {
+                    name: "End",
+                    data: channelSeries.dataEnd,
+                  },
+                ],
+              },
+              {
+                options: {
+                  ...prevState.options,
+                  xaxis: {
+                    axisTicks: {
+                      show: false,
+                    },
+                    labels: {
+                      show: false,
+                      rotate: 0,
+                      style: {
+                        fontFamily: "Raleway Variable, sans-serif",
+                        fontWeight: 500,
+                      },
+                    },
+                    categories: filteredCategories,
+                  },
+                  title: {
+                    ...prevState.options.title,
+                    text: `${channelSeries.name} - Net Customers`,
+                  },
+                },
+                series: [
+                  {
+                    name: "Net Customers",
+                    data: channelSeries.dataNetAdd,
+                  },
+                ],
+              },
+            ]),
           ],
           chartsNoFilter: [
             {
@@ -1164,6 +1209,8 @@ const CustomerSection = React.memo(
                 chart: {
                   ...prevState.options.chart,
                   id: "yearlyTotal",
+                  type: "bar",
+
                   stacked: false,
                   toolbar: {
                     show: true,
@@ -1197,23 +1244,8 @@ const CustomerSection = React.memo(
                       return `${year}`;
                     }
                   ),
-                  // title: {
-                  //   text: "Year",
-                  //   style: {
-                  //     fontSize: "13px",
-                  //     fontFamily: "Raleway Variable, sans-serif",
-                  //     fontWeight: 700,
-                  //   },
-                  // },
                 },
                 yaxis: {
-                  // title: {
-                  //   text: "Total Customers",
-                  //   style: {
-                  //     fontFamily: "Raleway Variable, sans-serif",
-                  //     fontSize: "13px",
-                  //   },
-                  // },
                   min: 0, // Đặt giá trị tối thiểu của trục Oy là 0
                   labels: {
                     formatter: (value) => `${formatNumber(value.toFixed(0))}`,
@@ -1238,6 +1270,8 @@ const CustomerSection = React.memo(
                 chart: {
                   ...prevState.options.chart,
                   id: "yearlyGrowthRate",
+                  type: "bar",
+
                   stacked: false,
                   toolbar: {
                     show: true,
@@ -1263,23 +1297,8 @@ const CustomerSection = React.memo(
                       return `${year}`;
                     }
                   ),
-                  // title: {
-                  //   text: "Year",
-                  //   style: {
-                  //     fontSize: "13px",
-                  //     fontFamily: "Raleway Variable, sans-serif",
-                  //     fontWeight: 700,
-                  //   },
-                  // },
                 },
                 yaxis: {
-                  // title: {
-                  //   text: "Growth Rate (%)",
-                  //   style: {
-                  //     fontFamily: "Raleway Variable, sans-serif",
-                  //     fontSize: "13px",
-                  //   },
-                  // },
                   min: 0, // Đặt giá trị tối thiểu của trục Oy là 0
                   labels: {
                     formatter: (value) => `${value.toFixed(0)}`,
@@ -1304,6 +1323,7 @@ const CustomerSection = React.memo(
                 chart: {
                   ...prevState.options.chart,
                   id: "channelYearlyTotals",
+                  type: "bar",
                   stacked: false,
                   toolbar: {
                     show: true,
@@ -1315,6 +1335,10 @@ const CustomerSection = React.memo(
                 title: {
                   ...prevState.options.title,
                   text: "Customers By Channel",
+                  style: {
+                    fontSize: "13px",
+                    fontFamily: "Raleway Variable, sans-serif",
+                  },
                 },
                 xaxis: {
                   ...prevState.options.xaxis,
@@ -1325,17 +1349,42 @@ const CustomerSection = React.memo(
                       return `${year}`;
                     }
                   ),
-                  // title: {
-                  //   text: "Year",
-                  //   style: {
-                  //     fontSize: "13px",
-                  //     fontFamily: "Raleway Variable, sans-serif",
-                  //     fontWeight: 700,
-                  //   },
-                  // },
                 },
               },
               series: channelYearlyTotals,
+            },
+            {
+              options: {
+                ...prevState.options,
+                chart: {
+                  ...prevState.options.chart,
+                  id: "distribution",
+                  stacked: false,
+                  type: "pie",
+                  toolbar: {
+                    show: true,
+                    tools: {
+                      download: true,
+                    },
+                  },
+                },
+                labels: pieChartLabels, // Labels for pie chart
+                title: {
+                  text: "Distribution",
+                  style: {
+                    fontSize: "13px",
+                    fontFamily: "Raleway Variable, sans-serif",
+                  },
+                },
+                legend: {
+                  position: "bottom",
+                  horizontalAlign: "right",
+                  fontFamily: "Raleway Variable, sans-serif",
+                  fontWeight: 500,
+                  fontSize: "13px",
+                },
+              },
+              series: pieChartSeries, // Series (data) for pie chart
             },
           ],
         };
@@ -1627,7 +1676,6 @@ const CustomerSection = React.memo(
           const totalUsersData = filtered.find((row) =>
             row.key.includes("-end")
           );
-          console.log("addedUsersData", addedUsersData);
           const existingCustomers = extractData(
             existingCustomersData,
             "month",
@@ -1936,7 +1984,11 @@ const CustomerSection = React.memo(
                           },
                         }}
                         series={chart.series}
-                        type="area"
+                        type={
+                          chart?.options?.chart?.type
+                            ? chart?.options?.chart?.type
+                            : "area"
+                        }
                         height={350}
                       />
                     </CardContent>
@@ -1949,10 +2001,13 @@ const CustomerSection = React.memo(
               ?.filter(
                 (chart) =>
                   chart?.options?.chart?.id !== "allChannels" &&
-                  chart?.options?.title?.text?.toLowerCase() ===
-                    tempCustomerInputs
-                      .find((input) => input.id == renderCustomerForm)
-                      ?.channelName?.toLowerCase()
+                  chart?.options?.title?.text
+                    ?.toLowerCase()
+                    ?.includes(
+                      tempCustomerInputs
+                        .find((input) => input.id == renderCustomerForm)
+                        ?.channelName?.toLowerCase()
+                    )
               )
               .map((chart, index) => (
                 <div key={index}>
@@ -2010,7 +2065,11 @@ const CustomerSection = React.memo(
                           },
                         }}
                         series={chart.series}
-                        type="area"
+                        type={
+                          chart?.options?.chart?.type
+                            ? chart?.options?.chart?.type
+                            : "area"
+                        }
                         height={350}
                       />
                     </CardContent>
@@ -2078,8 +2137,12 @@ const CustomerSection = React.memo(
                         },
                       }}
                       series={chart.series}
-                      type="bar"
-                      height={350}
+                      type={
+                        chart?.options?.chart?.type
+                          ? chart?.options?.chart?.type
+                          : "area"
+                      }
+                      height={chart?.options?.chart?.type === "pie" ? 395 : 350}
                     />
                   </CardContent>
                 </CardShadcn>
@@ -2098,10 +2161,31 @@ const CustomerSection = React.memo(
               <Chart
                 options={{
                   ...selectedChart.options,
+                  fill: {
+                    type: "gradient",
+                    gradient: {
+                      shade: "light",
+                      shadeIntensity: 0.5,
+                      opacityFrom: 0.75,
+                      opacityTo: 0.65,
+                      stops: [0, 90, 100],
+                    },
+                  },
+                  xaxis: {
+                    ...selectedChart.options.xaxis,
+                  },
+
+                  stroke: {
+                    width: 1,
+                    curve: "straight",
+                  },
                 }}
-                className="p-4"
                 series={selectedChart.series}
-                type="area"
+                type={
+                  selectedChart?.options?.chart?.type
+                    ? selectedChart?.options?.chart?.type
+                    : "area"
+                }
                 height={500}
               />
             )}

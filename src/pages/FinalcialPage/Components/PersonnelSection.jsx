@@ -421,7 +421,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
     options: {
       chart: {
         id: "personnel-chart",
-        type: "bar",
+        type: "area",
         height: 350,
         toolbar: {
           show: true,
@@ -432,9 +432,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
         zoom: { enabled: false },
         fontFamily: "Raleway Variable, sans-serif",
         fontWeight: 500,
-        animations: {
-          enabled: false,
-        },
+        animations: { enabled: false },
       },
       grid: { show: false },
       colors: [
@@ -446,9 +444,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
         "#D84FE4",
       ],
       xaxis: {
-        axisTicks: {
-          show: false,
-        },
+        axisTicks: { show: false },
         labels: {
           show: true,
           rotate: 0,
@@ -457,42 +453,18 @@ const PersonnelSection = ({ numberOfMonths }) => {
             fontWeight: 500,
           },
         },
-        categories: Array.from({ length: numberOfMonths }, (_, i) => {
-          const monthIndex = (startingMonth + i - 1) % 12;
-          const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
-          return `${months[monthIndex]}/${year}`;
-        }),
-        // title: {
-        //   text: "Month",
-        //   style: {
-        //     fontFamily: "Raleway Variable, sans-serif",
-        //     fontSize: "13px",
-        //   },
-        // },
+        categories: [], // Ensure categories array is initialized
       },
       yaxis: {
         min: 0,
-        axisboder: {
-          show: true,
-        },
         labels: {
           show: true,
           style: {
             fontFamily: "Raleway Variable, sans-serif",
             fontWeight: 500,
-            fontSize: "13px",
           },
-          formatter: function (val) {
-            return formatNumber(Math.floor(val));
-          },
+          formatter: (val) => formatNumber(Math.floor(val)),
         },
-        // title: {
-        //   text: "Salary ($)",
-        //   style: {
-        //     fontFamily: "Raleway Variable, sans-serif",
-        //     fontSize: "13px",
-        //   },
-        // },
       },
       legend: {
         position: "bottom",
@@ -504,7 +476,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
       dataLabels: { enabled: false },
       stroke: { width: 1, curve: "straight" },
     },
-    series: [],
+    series: [], // Initialize with an empty array
   });
 
   const { id } = useParams();
@@ -563,6 +535,21 @@ const PersonnelSection = ({ numberOfMonths }) => {
   const [chartStartMonth, setChartStartMonth] = useState(1);
   const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
 
+  const calculatePersonnelByDepartment = () => {
+    const departmentCount = tempPersonnelInputs.reduce((acc, input) => {
+      if (input.department) {
+        acc[input.department] =
+          (acc[input.department] || 0) + input.numberOfHires;
+      }
+      return acc;
+    }, {});
+
+    const labels = Object.keys(departmentCount);
+    const data = Object.values(departmentCount);
+
+    return { labels, data };
+  };
+
   useEffect(() => {
     const filteredSeries = tempPersonnelCostData.map((personnel) => ({
       name: personnel.jobTitle,
@@ -603,7 +590,48 @@ const PersonnelSection = ({ numberOfMonths }) => {
         { name: "Total", data: totalPersonnelCostPerMonth },
       ],
     }));
+
+    const { labels, data } = calculatePersonnelByDepartment();
+
+    setPersonnelChart((prevState) => ({
+      ...prevState,
+      pieChart: {
+        options: {
+          ...prevState.options,
+          chart: {
+            ...prevState.options.chart,
+            id: "pieChart",
+            stacked: false,
+            type: "pie",
+            toolbar: {
+              show: true,
+              tools: {
+                download: true,
+              },
+            },
+          },
+          labels: labels, // Labels for pie chart
+          title: {
+            text: "Distribution",
+            style: {
+              fontSize: "13px",
+              fontFamily: "Raleway Variable, sans-serif",
+            },
+          },
+          legend: {
+            position: "bottom",
+            horizontalAlign: "right",
+            fontFamily: "Raleway Variable, sans-serif",
+            fontWeight: 500,
+            fontSize: "13px",
+          },
+        },
+        series: data, // Series (data) for pie chart
+      },
+    }));
   }, [tempPersonnelCostData, chartStartMonth, chartEndMonth]);
+
+  console.log("personnelChart", personnelChart);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -619,7 +647,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
     setSelectedChart(chart);
     setIsChartModalVisible(true);
   };
-
+  console.log("selectedChart", selectedChart);
   const downloadExcel = () => {
     const workBook = XLSX.utils.book_new();
 
@@ -869,7 +897,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
 
   const renderValue =
     tempPersonnelInputs.find((item) => item.id == renderPersonnelForm) || "all";
-  console.log("personnelCostTableData", personnelCostTableData);
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
@@ -1076,11 +1104,78 @@ const PersonnelSection = ({ numberOfMonths }) => {
                   },
                 }}
                 series={personnelChart.series}
-                type="area"
+                type={
+                  personnelChart?.options?.chart?.type
+                    ? personnelChart?.options?.chart?.type
+                    : "area"
+                }
                 height={350}
               />
             </CardContent>
           </CardShadcn>
+
+          <CardShadcn className="flex flex-col transition duration-500 !rounded-md relative">
+            <CardHeader>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-2 right-2 z-50"
+                onClick={(event) =>
+                  handleChartClick(personnelChart?.pieChart, event)
+                }
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-4 h-4"
+                >
+                  <path d="M15 3h6v6" />
+                  <path d="M10 14 21 3" />
+                  <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                </svg>
+                <span className="sr-only">Fullscreen</span>
+              </Button>
+            </CardHeader>
+            {personnelChart?.pieChart?.series?.length > 0 && (
+              <CardContent>
+                <Chart
+                  options={{
+                    ...personnelChart?.pieChart?.options,
+                    fill: {
+                      type: "gradient",
+                      gradient: {
+                        shade: "light",
+                        shadeIntensity: 0.5,
+                        opacityFrom: 0.75,
+                        opacityTo: 0.65,
+                        stops: [0, 90, 100],
+                      },
+                    },
+
+                    stroke: {
+                      width: 1,
+                      curve: "straight",
+                    },
+                  }}
+                  series={personnelChart?.pieChart?.series}
+                  type={
+                    personnelChart?.pieChart?.options?.chart?.type
+                      ? personnelChart?.pieChart?.options?.chart?.type
+                      : "area"
+                  }
+                  height={350}
+                />
+              </CardContent>
+            )}
+          </CardShadcn>
+
           <Modal
             centered
             open={isChartModalVisible}
@@ -1092,10 +1187,24 @@ const PersonnelSection = ({ numberOfMonths }) => {
             {selectedChart && (
               <Chart
                 options={{
-                  ...selectedChart.options,
+                  ...selectedChart?.options,
+                  fill: {
+                    type: "gradient",
+                    gradient: {
+                      shade: "light",
+                      shadeIntensity: 0.5,
+                      opacityFrom: 0.75,
+                      opacityTo: 0.65,
+                      stops: [0, 90, 100],
+                    },
+                  },
                 }}
                 series={selectedChart.series}
-                type="area"
+                type={
+                  selectedChart?.options?.chart?.type
+                    ? selectedChart?.options?.chart?.type
+                    : "area"
+                }
                 height={500}
                 className="p-4"
               />

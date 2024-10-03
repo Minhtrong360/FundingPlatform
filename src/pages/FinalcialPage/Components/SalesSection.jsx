@@ -724,6 +724,8 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
     }
   }, [tempRevenueData, chartStartMonth, chartEndMonth]);
 
+  console.log("revenue", revenue);
+
   const daysOptions = [0, 15, 30, 45, 60, 90];
 
   const revenueColumns = [
@@ -1401,6 +1403,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
             ))}
         </div>
         <Modal
+          zIndex={42424244}
           centered
           open={isChartModalVisible}
           footer={null}
@@ -1509,6 +1512,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
 
       {isInputFormOpen && (
         <Modal
+          zIndex={42424244}
           open={isInputFormOpen}
           onOk={() => {
             handleSave();
@@ -1535,7 +1539,6 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
           }}
           footer={null}
           centered={true}
-          zIndex={42424243}
         >
           <ChannelInputForm
             tempChannelInputs={tempChannelInputs}
@@ -1557,6 +1560,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
 
       {isDeleteModalOpen && (
         <Modal
+          zIndex={42424244}
           title="Confirm Delete"
           open={isDeleteModalOpen}
           onOk={confirmDelete}

@@ -223,6 +223,7 @@ const Card = ({
       </CardShadcn>
 
       <Modal
+        zIndex={42424244}
         title={
           <div>
             Giving Score for{" "}

@@ -85,6 +85,7 @@ import { Modal } from "antd";
 const PolicyModal = ({ isVisible, content, onClose }) => {
   return (
     <Modal
+      zIndex={42424244}
       width={700}
       // title="Policy Details"
       open={isVisible}

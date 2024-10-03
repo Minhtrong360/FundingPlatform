@@ -428,6 +428,7 @@ function FleaMarketList() {
 
               {isDeleteModalOpen && (
                 <Modal
+                  zIndex={42424244}
                   title="Confirm Delete"
                   open={isDeleteModalOpen}
                   onOk={confirmDelete}
@@ -465,6 +466,7 @@ function FleaMarketList() {
 
               {isAssignModalOpen && (
                 <Modal
+                  zIndex={42424244}
                   title="Assign project"
                   open={isAssignModalOpen}
                   onOk={handleConfirmAssign}

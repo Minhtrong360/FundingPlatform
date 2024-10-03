@@ -426,6 +426,7 @@ const CustomerInputsForm = React.memo(
               </div>
               {isModalCustomOpen && (
                 <Modal
+                  zIndex={42424244}
                   title="Custom Inputs"
                   open={isModalCustomOpen}
                   onOk={handleApply}
@@ -454,7 +455,6 @@ const CustomerInputsForm = React.memo(
                   centered={true}
                   width="90%"
                   style={{ top: 20 }}
-                  zIndex={42424243}
                 >
                   <DraggableChart
                     data={temporaryData}
@@ -2150,6 +2150,7 @@ const CustomerSection = React.memo(
             ))}
           </div>
           <Modal
+            zIndex={42424244}
             open={isChartModalVisible}
             footer={null}
             centered
@@ -2275,13 +2276,13 @@ const CustomerSection = React.memo(
 
         {isInputFormOpen && (
           <Modal
+            zIndex={42424244}
             open={isInputFormOpen}
             onCancel={() => {
               setTempCustomerInputs(customerInputs);
               setIsInputFormOpen(false);
             }}
             centered={true}
-            zIndex={42424243}
             footer={null}
           >
             <CustomerInputsForm
@@ -2307,6 +2308,7 @@ const CustomerSection = React.memo(
 
         {isDeleteModalOpen && (
           <Modal
+            zIndex={42424244}
             title="Confirm Delete"
             open={isDeleteModalOpen}
             onOk={confirmDelete}

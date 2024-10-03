@@ -6,6 +6,7 @@ function LoadingButtonClick({ isLoading }) {
   return (
     <>
       <Modal
+        zIndex={42424244}
         ariaHideApp={false}
         isOpen={isLoading}
         style={{

@@ -336,6 +336,7 @@ export default function AddProject({
         }}
       >
         <Modal
+          zIndex={42424244}
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           currentUser={currentUser}

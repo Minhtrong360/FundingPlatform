@@ -532,6 +532,7 @@ function ProjectList({ projects, isLoading }) {
 
       {isDeleteModalOpen && (
         <Modal
+          zIndex={42424244}
           title="Confirm Delete"
           open={isDeleteModalOpen}
           onOk={confirmDelete}
@@ -568,6 +569,7 @@ function ProjectList({ projects, isLoading }) {
 
       {isAssignModalOpen && (
         <Modal
+          zIndex={42424244}
           title="Assign project"
           open={isAssignModalOpen}
           onOk={handleConfirmAssign}
@@ -605,6 +607,7 @@ function ProjectList({ projects, isLoading }) {
 
       {isSubmitModalOpen && (
         <Modal
+          zIndex={42424244}
           title="Submit project"
           open={isSubmitModalOpen}
           onOk={handleConfirmSubmit}
@@ -756,6 +759,7 @@ function ProjectList({ projects, isLoading }) {
 
       {isInviteModalOpen && (
         <Modal
+          zIndex={42424244}
           title="Invite user"
           open={isInviteModalOpen}
           onOk={handleConfirmInvite}

@@ -18,6 +18,7 @@ const CredentialModal = ({ visible, onSubmit, onCancel }) => {
 
   return (
     <Modal
+      zIndex={42424244}
       open={visible}
       onOk={handleOk}
       onCancel={onCancel}

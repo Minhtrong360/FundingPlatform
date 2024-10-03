@@ -359,6 +359,7 @@ export default function FleaMarketForm({
 
   return (
     <Modal
+      zIndex={42424244}
       title="Add new Flea-Market project"
       open={isAddNewModalOpen}
       onOk={handleSubmit}

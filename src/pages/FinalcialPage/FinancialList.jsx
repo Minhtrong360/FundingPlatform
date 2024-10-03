@@ -351,6 +351,7 @@ function FinancialList() {
 
           {isDeleteModalOpen && (
             <Modal
+              zIndex={42424244}
               title="Confirm Delete"
               open={isDeleteModalOpen}
               onOk={handleConfirmDelete}
@@ -365,6 +366,7 @@ function FinancialList() {
 
           {isAssignModalOpen && (
             <Modal
+              zIndex={42424244}
               title="Assign Financial Project"
               open={isAssignModalOpen}
               onOk={handleConfirmAssign}
@@ -387,6 +389,7 @@ function FinancialList() {
 
           {isAddNewModalOpen && (
             <Modal
+              zIndex={42424244}
               title="Add new financial project"
               open={isAddNewModalOpen}
               onOk={handleConfirmAddNew}
@@ -408,6 +411,7 @@ function FinancialList() {
 
           {isInviteModalOpen && (
             <Modal
+              zIndex={42424244}
               title="Invite user"
               open={isInviteModalOpen}
               onOk={handleConfirmInvite}

@@ -611,13 +611,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
             },
           },
           labels: labels, // Labels for pie chart
-          title: {
-            text: "Distribution",
-            style: {
-              fontSize: "13px",
-              fontFamily: "Raleway Variable, sans-serif",
-            },
-          },
+
           legend: {
             position: "bottom",
             horizontalAlign: "right",
@@ -1177,6 +1171,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
           </CardShadcn>
 
           <Modal
+            zIndex={42424244}
             centered
             open={isChartModalVisible}
             footer={null}
@@ -1270,6 +1265,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
       </div>
       {isInputFormOpen && (
         <Modal
+          zIndex={42424244}
           open={isInputFormOpen}
           onCancel={() => {
             setTempPersonnelInputs(personnelInputs);
@@ -1277,7 +1273,6 @@ const PersonnelSection = ({ numberOfMonths }) => {
           }}
           footer={null}
           centered={true}
-          zIndex={42424243}
         >
           <PersonnelInputForm
             tempPersonnelInputs={tempPersonnelInputs}
@@ -1295,6 +1290,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
       )}
       {isDeleteModalOpen && (
         <Modal
+          zIndex={42424244}
           title="Confirm Delete"
           open={isDeleteModalOpen}
           onOk={confirmDelete}

@@ -1575,6 +1575,7 @@ const HeroUniversities = ({
         )}
 
         <Modal
+          zIndex={42424244}
           title="Add new Competition"
           open={isAddNewModalOpen}
           onOk={handleAddNewCode}
@@ -1711,6 +1712,7 @@ const HeroUniversities = ({
         </Modal>
 
         <Modal
+          zIndex={42424244}
           title="Edit Code"
           open={isEditModalOpen}
           onOk={handleEditCode}
@@ -1884,6 +1886,7 @@ const HeroUniversities = ({
         </Modal>
 
         <Modal
+          zIndex={42424244}
           title="Confirm Delete"
           open={isDeleteModalOpen}
           onOk={handleDeleteCode}
@@ -1915,6 +1918,7 @@ const HeroUniversities = ({
         </Modal>
 
         <Modal
+          zIndex={42424244}
           title={
             selectedCode?.publish ? "Confirm Unpublish" : "Confirm Publish"
           }
@@ -1946,6 +1950,7 @@ const HeroUniversities = ({
         </Modal>
 
         <Modal
+          zIndex={42424244}
           title="Manage Judges"
           open={isJudgeModalOpen}
           onOk={() => setIsJudgeModalOpen(false)}
@@ -2035,6 +2040,7 @@ const HeroUniversities = ({
         </Modal>
 
         <Modal
+          zIndex={42424244}
           title="Manage Scoring Rules"
           open={isScoringRulesModalOpen}
           onOk={handleSaveScoringRules}
@@ -2102,6 +2108,7 @@ const HeroUniversities = ({
         </Modal>
 
         {/* <Modal
+zIndex={42424244}
           title={`Giving Score for ${selectedProject?.name?.toUpperCase()}`}
           open={isScoreModalOpen}
           onOk={() => handleScoreProject(selectedProject.id)}
@@ -2162,6 +2169,7 @@ const HeroUniversities = ({
         </Modal> */}
 
         <Modal
+          zIndex={42424244}
           title="Judge Scores"
           open={isJudgeScoreModalOpen}
           onOk={() => setIsJudgeScoreModalOpen(false)}
@@ -2180,6 +2188,7 @@ const HeroUniversities = ({
         </Modal>
 
         <Modal
+          zIndex={42424244}
           title="Confirm Remove"
           open={isRemoveProjectModalOpen}
           onOk={confirmRemoveProject}
@@ -2215,6 +2224,7 @@ const HeroUniversities = ({
         </Modal>
 
         <Modal
+          zIndex={42424244}
           title="Qualified project"
           open={isQualifiedModalOpen}
           onOk={handleQualified}
@@ -2233,6 +2243,7 @@ const HeroUniversities = ({
         </Modal>
 
         <Modal
+          zIndex={42424244}
           title="Undo Qualified project"
           open={isUndoQualifiedModalOpen}
           onOk={handleUndoQualified}

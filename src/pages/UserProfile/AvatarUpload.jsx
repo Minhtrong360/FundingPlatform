@@ -61,6 +61,7 @@ const AvatarUpload = ({ userData, setAvatar }) => {
         <button type="button">Upload</button>;
       </Upload>
       <Modal
+        zIndex={42424244}
         open={previewOpen}
         title={previewTitle}
         footer={null}

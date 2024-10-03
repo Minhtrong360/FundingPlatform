@@ -2465,6 +2465,7 @@ function AdminPage() {
 
         {isDeleteModalOpen && (
           <Modal
+            zIndex={42424244}
             title="Confirm Delete"
             open={isDeleteModalOpen}
             onOk={confirmDelete}
@@ -2498,6 +2499,7 @@ function AdminPage() {
 
         {isDeleteFinModalOpen && (
           <Modal
+            zIndex={42424244}
             title="Confirm Delete"
             open={isDeleteFinModalOpen}
             onOk={confirmFinDelete}
@@ -2534,6 +2536,7 @@ function AdminPage() {
 
         {isUpgradePlanModalOpen && (
           <Modal
+            zIndex={42424244}
             title="Upgrade client's plan"
             open={isUpgradePlanModalOpen}
             onOk={confirmUpgrade}
@@ -2592,6 +2595,7 @@ function AdminPage() {
 
         {isDeleteClientModalOpen && (
           <Modal
+            zIndex={42424244}
             title="Confirm Delete Client"
             open={isDeleteClientModalOpen}
             onOk={confirmClientDelete}

@@ -20,6 +20,7 @@ const StepByStepModal = () => {
         Open Instructions
       </Button>
       <Modal
+        zIndex={42424244}
         open={visible}
         title="How to Apply Your Project?"
         footer={null}

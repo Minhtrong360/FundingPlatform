@@ -1354,6 +1354,7 @@ const CompetitionPost = () => {
       </div>
 
       <Modal
+        zIndex={42424244}
         title="Judge Scores"
         open={isJudgeScoreModalOpen}
         onOk={() => setIsJudgeScoreModalOpen(false)}
@@ -1372,6 +1373,7 @@ const CompetitionPost = () => {
       </Modal>
 
       <Modal
+        zIndex={42424244}
         title="Confirm Remove"
         open={isRemoveProjectModalOpen}
         onOk={confirmRemoveProject}
@@ -1407,6 +1409,7 @@ const CompetitionPost = () => {
       </Modal>
 
       <Modal
+        zIndex={42424244}
         title="Qualified project"
         open={isQualifiedModalOpen}
         onOk={handleQualified}
@@ -1425,6 +1428,7 @@ const CompetitionPost = () => {
       </Modal>
 
       <Modal
+        zIndex={42424244}
         title="Undo Qualified project"
         open={isUndoQualifiedModalOpen}
         onOk={handleUndoQualified}
@@ -1443,6 +1447,7 @@ const CompetitionPost = () => {
       </Modal>
 
       <Modal
+        zIndex={42424244}
         title={
           <>
             View Diary of{" "}

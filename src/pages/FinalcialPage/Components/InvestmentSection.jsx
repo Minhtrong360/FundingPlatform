@@ -1374,6 +1374,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         </div>
 
         <Modal
+          zIndex={42424244}
           centered
           open={isChartModalVisible}
           footer={null}
@@ -1458,6 +1459,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
       {isInputFormOpen && (
         <Modal
+          zIndex={42424244}
           open={isInputFormOpen}
           onCancel={() => {
             setTempInvestmentInputs(investmentInputs);
@@ -1484,6 +1486,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       )}
       {isDeleteModalOpen && (
         <Modal
+          zIndex={42424244}
           title="Confirm Delete"
           open={isDeleteModalOpen}
           onOk={confirmDelete}

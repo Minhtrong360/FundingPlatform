@@ -1424,6 +1424,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           </div>
         </div>
         <Modal
+          zIndex={42424244}
           centered
           open={isChartModalVisible}
           footer={null}
@@ -1507,7 +1508,12 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       </div>
 
       {isInputFormOpen && (
-        <Modal open={isInputFormOpen} centered={true} zIndex={42424243}>
+        <Modal
+          zIndex={42424244}
+          open={isInputFormOpen}
+          centered={true}
+          zIndex={42424243}
+        >
           <LoanInputForm
             tempLoanInputs={tempLoanInputs}
             renderLoanForm={renderLoanForm}
@@ -1524,6 +1530,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       )}
       {isDeleteModalOpen && (
         <Modal
+          zIndex={42424244}
           title="Confirm Delete"
           open={isDeleteModalOpen}
           onOk={confirmDelete}

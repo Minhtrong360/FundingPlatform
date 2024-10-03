@@ -66,6 +66,7 @@ export default function FleaMarketDetail({
 
   return (
     <Modal
+      zIndex={42424244}
       title="Flea-Market project detail"
       open={isDetailModalOpen}
       onOk={showContactDetails ? handleHide : handleContact}

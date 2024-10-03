@@ -1059,6 +1059,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
                     {isInputFormOpen && (
                       <Modal
+                        zIndex={42424244}
                         // title="Customer channel"
                         open={isInputFormOpen}
                         onOk={() => {
@@ -1070,7 +1071,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                         }}
                         footer={null}
                         centered={true}
-                        zIndex={42424243}
                       >
                         <DurationSelect
                           handleSubmit={handleSubmit}

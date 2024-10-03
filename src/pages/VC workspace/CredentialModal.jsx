@@ -15,6 +15,7 @@ const CredentialModal = ({ visible, onSubmit, onCancel }) => {
 
   return (
     <Modal
+      zIndex={42424244}
       title="Enter Credentials"
       open={visible}
       onOk={handleOk}

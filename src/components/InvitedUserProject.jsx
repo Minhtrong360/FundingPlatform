@@ -192,6 +192,7 @@ export default function InvitedUserProject({ projectId }) {
         }}
       >
         <Modal
+          zIndex={42424244}
           isOpen={isModalOpen}
           projectId={projectId}
           onClose={() => setIsModalOpen(false)}

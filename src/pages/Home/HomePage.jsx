@@ -369,6 +369,7 @@ const HomePage = () => {
       <Footer />
       {user && (
         <Modal
+          zIndex={42424244}
           title="Please, Complete Your Profile"
           open={isModalOpen}
           onCancel={handleSubmit}

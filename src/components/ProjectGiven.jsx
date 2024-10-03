@@ -163,6 +163,7 @@ export default function ProjectGiven({
         }}
       >
         <Modal
+          zIndex={42424244}
           isOpen={isModalOpen}
           projectId={projectId}
           updatedProjects={updatedProjects}

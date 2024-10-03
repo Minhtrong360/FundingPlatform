@@ -309,6 +309,7 @@ const Search = ({
 
             {isOpen && (
               <Modal
+                zIndex={42424244}
                 title="Add filter criteria"
                 open={isOpen}
                 onOk={handleOk}

@@ -288,6 +288,7 @@ export default function AddLinkFile({
         }}
       >
         <Modal
+          zIndex={42424244}
           isOpen={isModalOpen}
           currentProject={currentProject}
           handleAddLinks={handleAddLinks}

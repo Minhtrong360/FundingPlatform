@@ -262,6 +262,7 @@ const BlogSection = ({ isCreatingBlog, setIsCreatingBlog }) => {
       </div>
 
       <Modal
+        zIndex={42424244}
         title={null}
         open={isCreatingBlog}
         onCancel={() => {

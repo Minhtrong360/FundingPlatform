@@ -1587,6 +1587,7 @@ const HeroVC = ({
         )}
 
         <Modal
+          zIndex={42424244}
           title="Add new Cohort"
           open={isAddNewModalOpen}
           onOk={handleAddNewCode}
@@ -1723,6 +1724,7 @@ const HeroVC = ({
         </Modal>
 
         <Modal
+          zIndex={42424244}
           title="Edit Code"
           open={isEditModalOpen}
           onOk={handleEditCode}
@@ -1894,6 +1896,7 @@ const HeroVC = ({
         </Modal>
 
         <Modal
+          zIndex={42424244}
           title="Confirm Delete"
           open={isDeleteModalOpen}
           onOk={handleDeleteCode}
@@ -1925,6 +1928,7 @@ const HeroVC = ({
         </Modal>
 
         <Modal
+          zIndex={42424244}
           title={
             selectedCode?.publish ? "Confirm Unpublish" : "Confirm Publish"
           }
@@ -1956,6 +1960,7 @@ const HeroVC = ({
         </Modal>
 
         <Modal
+          zIndex={42424244}
           open={isJudgeModalOpen}
           onOk={() => setIsJudgeModalOpen(false)}
           onCancel={() => setIsJudgeModalOpen(false)}
@@ -2044,6 +2049,7 @@ const HeroVC = ({
         </Modal>
 
         <Modal
+          zIndex={42424244}
           title="Manage Scoring Rules"
           open={isScoringRulesModalOpen}
           onOk={handleSaveScoringRules}
@@ -2111,6 +2117,7 @@ const HeroVC = ({
         </Modal>
 
         {/* <Modal
+zIndex={42424244}
           title={`Giving Score for ${selectedProject?.name?.toUpperCase()}`}
           open={isScoreModalOpen}
           onOk={() => handleScoreProject(selectedProject.id)}
@@ -2171,6 +2178,7 @@ const HeroVC = ({
         </Modal> */}
 
         <Modal
+          zIndex={42424244}
           title="Judge Scores"
           open={isJudgeScoreModalOpen}
           onOk={() => setIsJudgeScoreModalOpen(false)}
@@ -2189,6 +2197,7 @@ const HeroVC = ({
         </Modal>
 
         <Modal
+          zIndex={42424244}
           title="Confirm Remove"
           open={isRemoveProjectModalOpen}
           onOk={confirmRemoveProject}
@@ -2224,6 +2233,7 @@ const HeroVC = ({
         </Modal>
 
         <Modal
+          zIndex={42424244}
           title="Qualified project"
           open={isQualifiedModalOpen}
           onOk={handleQualified}
@@ -2238,6 +2248,7 @@ const HeroVC = ({
         </Modal>
 
         <Modal
+          zIndex={42424244}
           title="Undo Qualified project"
           open={isUndoQualifiedModalOpen}
           onOk={handleUndoQualified}

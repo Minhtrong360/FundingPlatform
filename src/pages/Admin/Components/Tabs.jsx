@@ -210,6 +210,7 @@ function Tabs({
         )} */}
 
         {/* <Modal
+zIndex={42424244}
           title="Add new Premium Code"
           open={isAddNewModalOpen}
           onOk={handleAddNewCode}
@@ -273,6 +274,7 @@ function Tabs({
         </Modal>
 
         <Modal
+zIndex={42424244}
           title="Edit Premium Code"
           open={isEditModalOpen}
           onOk={handleEditCode}
@@ -337,6 +339,7 @@ function Tabs({
 
         {isDeleteModalOpen && (
           <Modal
+zIndex={42424244}
             title="Confirm Delete"
             open={isDeleteModalOpen}
             onOk={handleDeleteCode}

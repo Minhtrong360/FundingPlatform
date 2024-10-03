@@ -220,6 +220,7 @@ export default function ProfileInfo({
     <div key="1">
       {showConfirmation && (
         <Modal
+          zIndex={42424244}
           title="Apply verification"
           open={showConfirmation}
           onOk={handleRequiredVerification}

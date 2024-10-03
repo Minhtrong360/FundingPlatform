@@ -60,6 +60,7 @@ const ProgressBar = ({ spinning, isLoading }) => {
   return (
     <>
       <Modal
+        zIndex={42424244}
         ariaHideApp={false}
         isOpen={isLoading || progress < 100} // Keep modal open until progress reaches 100
         style={{

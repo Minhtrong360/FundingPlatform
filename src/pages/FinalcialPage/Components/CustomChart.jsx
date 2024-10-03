@@ -197,6 +197,7 @@ const CustomChart = ({
         </CardContent>
       </Card>
       <Modal
+        zIndex={42424244}
         centered
         open={isChartModalVisible}
         footer={null}

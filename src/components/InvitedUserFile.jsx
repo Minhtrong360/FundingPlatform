@@ -154,6 +154,7 @@ export default function InvitedUser({ fileId }) {
         }}
       >
         <Modal
+          zIndex={42424244}
           isOpen={isModalOpen}
           fileId={fileId}
           onClose={() => setIsModalOpen(false)}

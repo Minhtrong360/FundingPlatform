@@ -1336,6 +1336,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
           {isLoading ? <SpinnerBtn /> : "Send"}
         </button>
         <Modal
+zIndex={42424244}
           open={isModalVisible}
           footer={null}
           centered

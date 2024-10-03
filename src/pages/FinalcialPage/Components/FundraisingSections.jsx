@@ -300,6 +300,7 @@ const FundraisingInputForm = ({
         </Button>
       </div>
       <Modal
+        zIndex={42424244}
         title="Confirm Delete"
         open={isDeleteModalOpen}
         onOk={confirmDelete}
@@ -1108,6 +1109,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           </div>
         )}
         <Modal
+          zIndex={42424244}
           centered
           open={isChartModalVisible}
           footer={null}
@@ -1187,6 +1189,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
       {isInputFormOpen && (
         <Modal
+          zIndex={42424244}
           open={isInputFormOpen}
           onOk={() => {
             handleSave();

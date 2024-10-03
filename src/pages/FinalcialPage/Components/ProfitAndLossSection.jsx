@@ -1375,6 +1375,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
 
       {isInputFormOpen && (
         <Modal
+          zIndex={42424244}
           // title="Customer channel"
           open={isInputFormOpen}
           onCancel={() => {
@@ -1398,7 +1399,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             },
           }}
           centered={true}
-          zIndex={42424243}
         >
           <GroqJS datasrc={profitAndLossData} inputUrl="urlPNL" />
         </Modal>

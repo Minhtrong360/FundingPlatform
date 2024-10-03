@@ -512,6 +512,7 @@ const CostInputForm = ({
 
             {isModalCustomOpen && (
               <Modal
+                zIndex={42424244}
                 title="Custom Inputs"
                 open={isModalCustomOpen}
                 onOk={handleApply}
@@ -1459,6 +1460,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
           </CardShadcn>
         </div>
         <Modal
+          zIndex={42424244}
           centered
           open={isChartModalVisible}
           footer={null}
@@ -1576,6 +1578,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
 
       {isInputFormOpen && (
         <Modal
+          zIndex={42424244}
           open={isInputFormOpen}
           onCancel={() => {
             setTempCostInput(costInputs);
@@ -1609,6 +1612,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
 
       {isDeleteModalOpen && (
         <Modal
+          zIndex={42424244}
           title="Confirm Delete"
           open={isDeleteModalOpen}
           onOk={confirmDelete}

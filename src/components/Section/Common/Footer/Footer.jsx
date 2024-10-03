@@ -580,6 +580,7 @@ const Footer = () => {
       </div>
 
       <Modal
+        zIndex={42424244}
         width={700}
         // title="Policy Details"
         open={isModalVisible}

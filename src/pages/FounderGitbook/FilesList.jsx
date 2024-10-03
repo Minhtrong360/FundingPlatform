@@ -402,6 +402,7 @@ function FilesList() {
         </div>
       </section>
       <Modal
+        zIndex={42424244}
         title="Confirm Delete"
         open={isDeleteModalVisible}
         onOk={handleDeleteModalOk}

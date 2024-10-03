@@ -1252,6 +1252,7 @@ function CashFlowSection({ numberOfMonths }) {
 
       {isInputFormOpen && (
         <Modal
+          zIndex={42424244}
           // title="Customer channel"
           open={isInputFormOpen}
           onCancel={() => {

@@ -541,7 +541,6 @@ const CostInputForm = ({
                 centered={true}
                 width="90%"
                 style={{ top: 20 }}
-                zIndex={42424243}
               >
                 <DraggableChart
                   data={temporaryData}
@@ -561,19 +560,19 @@ const CostInputForm = ({
       >
         <Button
           variant="destructive"
-          onClick={() => setIsDeleteModalOpen(true)}
-          style={{ backgroundColor: "#EF4444", color: "white" }}
-        >
-          <Trash2 className="mr-2 h-4 w-4" />
-          Remove
-        </Button>
-        <Button
-          variant="destructive"
           onClick={addNewCostInput}
           style={{ backgroundColor: "#18181B", color: "white" }}
         >
           <Plus className="mr-2 h-4 w-4" />
           Add
+        </Button>
+        <Button
+          variant="destructive"
+          onClick={() => setIsDeleteModalOpen(true)}
+          style={{ backgroundColor: "#EF4444", color: "white" }}
+        >
+          <Trash2 className="mr-2 h-4 w-4" />
+          Remove
         </Button>
         <Button
           variant="destructive"
@@ -1285,7 +1284,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
               {/* Bộ chọn khoảng thời gian */}
 
               <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
-                <div className="min-w-[10vw] w-full flex flex-row sm:!mr-0 !mr-1">
+                <div className="min-w-[9vw] w-full flex flex-row sm:!mr-0 !mr-1">
                   <Select
                     value={chartStartMonth}
                     onValueChange={(value) => {
@@ -1312,13 +1311,13 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="min-w-[10vw] w-full flex flex-row sm:!ml-0 !ml-1">
-                  <label
-                    htmlFor="endMonthSelect"
-                    className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
-                  >
-                    -
-                  </label>
+                <label
+                  htmlFor="endMonthSelect"
+                  className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
+                >
+                  -
+                </label>
+                <div className="min-w-[9vw] w-full flex flex-row sm:!ml-0 !ml-1">
                   <Select
                     value={chartEndMonth}
                     onValueChange={(value) => {
@@ -1585,7 +1584,6 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
             setIsInputFormOpen(false);
           }}
           centered={true}
-          zIndex={42424243}
           footer={null}
         >
           <CostInputForm

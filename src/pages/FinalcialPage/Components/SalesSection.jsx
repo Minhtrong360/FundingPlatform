@@ -291,19 +291,19 @@ const ChannelInputForm = React.memo(
         >
           <Button
             variant="destructive"
-            onClick={() => setIsDeleteModalOpen(true)}
-            style={{ backgroundColor: "#EF4444", color: "white" }}
-          >
-            <Trash2 className="w-4 h-4 mr-2" />
-            Remove
-          </Button>
-          <Button
-            variant="destructive"
             onClick={addNewChannelInput}
             style={{ backgroundColor: "#18181B", color: "white" }}
           >
             <Plus className="w-4 h-4 mr-2" />
             Add
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={() => setIsDeleteModalOpen(true)}
+            style={{ backgroundColor: "#EF4444", color: "white" }}
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Remove
           </Button>
           <Button
             variant="destructive"
@@ -645,6 +645,30 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
         Array(endIdx - startIdx).fill(0)
       );
 
+      // Correctly filter the revenue data for the pie chart
+      const revenueRows = filteredTableData.filter((row) =>
+        row.key.startsWith("Revenue -")
+      );
+
+      // Generate pie chart data, sliced between chartStartMonth and chartEndMonth
+      const pieChartData = revenueRows.map((row) => {
+        // Slice the months according to chartStartMonth and chartEndMonth
+        const slicedRevenue = Array.from({
+          length: chartEndMonth - chartStartMonth + 1,
+        }).reduce((sum, _, i) => {
+          const monthKey = `month${chartStartMonth + i}`;
+          return sum + parseNumber(row[monthKey] || 0); // Slicing between start and end months
+        }, 0);
+
+        return {
+          name: row.key.split(" - ")[1], // Extract channel name after 'Revenue - '
+          revenue: slicedRevenue, // Sum only the sliced range of months
+        };
+      });
+
+      const pieChartLabels = pieChartData.map((channel) => channel.name);
+      const pieChartSeries = pieChartData.map((channel) => channel.revenue);
+
       setRevenue((prevState) => ({
         ...prevState,
         series: [
@@ -661,6 +685,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
               chart: {
                 ...prevState.options.chart,
                 id: "allChannels",
+                type: "area",
                 stacked: false,
               },
               xaxis: {
@@ -671,13 +696,6 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
                   style: { fontFamily: "Raleway Variable, sans-serif" },
                 },
                 categories: filteredCategories,
-                // title: {
-                //   text: "Month",
-                //   style: {
-                //     fontSize: "12px",
-                //     fontFamily: "Raleway Variable, sans-serif",
-                //   },
-                // },
               },
               title: { ...prevState.options.title, text: "All Revenues" },
             },
@@ -689,10 +707,51 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
               { name: "Total", data: totalSalesData },
             ],
           },
+          {
+            options: {
+              chart: {
+                type: "pie",
+                toolbar: {
+                  show: true,
+                },
+              },
+              fill: {
+                type: "gradient",
+                gradient: {
+                  shade: "light",
+                  shadeIntensity: 0.5,
+                  opacityFrom: 0.75,
+                  opacityTo: 0.65,
+                  stops: [0, 90, 100],
+                },
+              },
+              labels: pieChartLabels,
+              title: {
+                text: "Revenue Distribution",
+              },
+
+              yaxis: {
+                min: 0, // Đặt giá trị tối thiểu của trục Oy là 0
+                labels: {
+                  formatter: (value) => `${formatNumber(value.toFixed(2))}`,
+                  style: {
+                    fontFamily: "Raleway Variable, sans-serif",
+                    fontWeight: 500,
+                    fontSize: "13px",
+                  },
+                },
+              },
+            },
+            series: pieChartSeries,
+          },
           ...salesChartsData.map((channelSeries) => ({
             options: {
               ...prevState.options,
-              chart: { ...prevState.options.chart, id: channelSeries.name },
+              chart: {
+                ...prevState.options.chart,
+                id: channelSeries.name,
+                type: "area",
+              },
               xaxis: {
                 axisTicks: { show: false },
                 labels: {
@@ -701,13 +760,6 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
                   style: { fontFamily: "Raleway Variable, sans-serif" },
                 },
                 categories: filteredCategories,
-                // title: {
-                //   text: "Month",
-                //   style: {
-                //     fontSize: "12px",
-                //     fontFamily: "Raleway Variable, sans-serif",
-                //   },
-                // },
               },
               title: { ...prevState.options.title, text: channelSeries.name },
             },
@@ -827,7 +879,6 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
             record.key
         )
       : revenueTableData.filter((record) => record.key !== ` `);
-
   const handleRenderFormChange = (e) => {
     setIsLoading(true);
     setRenderChannelForm(e);
@@ -1149,7 +1200,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
               {/* Bộ chọn khoảng thời gian */}
 
               <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
-                <div className="min-w-[10vw] w-full flex flex-row sm:!mr-0 !mr-1">
+                <div className="min-w-[9vw] w-full flex flex-row sm:!mr-0 !mr-1">
                   <Select
                     value={chartStartMonth}
                     onValueChange={(value) => {
@@ -1176,13 +1227,13 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="min-w-[10vw] w-full flex flex-row sm:!ml-0 !ml-1">
-                  <label
-                    htmlFor="endMonthSelect"
-                    className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
-                  >
-                    -
-                  </label>
+                <label
+                  htmlFor="endMonthSelect"
+                  className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
+                >
+                  -
+                </label>
+                <div className="min-w-[9vw] w-full flex flex-row sm:!ml-0 !ml-1">
                   <Select
                     value={chartEndMonth}
                     onValueChange={(value) => {
@@ -1326,7 +1377,11 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
                         stroke: { width: 1, curve: "straight" },
                       }}
                       series={chart.series}
-                      type="area"
+                      type={
+                        chart?.options?.chart?.type
+                          ? chart?.options?.chart?.type
+                          : "area"
+                      }
                       height={350}
                     />
                   </CardContent>
@@ -1417,7 +1472,11 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
                 ...selectedChart.options,
               }}
               series={selectedChart.series}
-              type="area"
+              type={
+                selectedChart?.options?.chart?.type
+                  ? selectedChart?.options?.chart?.type
+                  : "area"
+              }
               height={500}
               className="p-4"
             />

@@ -3,6 +3,7 @@ import { Button } from "../../../ui/button";
 import { PlusIcon } from "lucide-react";
 
 const PageHeader = ({ title, setIsCreatingBlog }) => {
+  console.log("title", title);
   return (
     <div className="zubuz-breadcrumb">
       <div className="container">
@@ -16,17 +17,15 @@ const PageHeader = ({ title, setIsCreatingBlog }) => {
           </ul>
         </nav>
 
-        {
-          (title = "Our Blog" && (
-            <Button
-              type="button"
-              className="w-full sm:w-auto !bg-black !text-white mt-5"
-              onClick={() => setIsCreatingBlog(true)}
-            >
-              <PlusIcon className="mr-2" /> New blog
-            </Button>
-          ))
-        }
+        {title === "Our Blog" && (
+          <Button
+            type="button"
+            className="w-full sm:w-auto !bg-black !text-white mt-5"
+            onClick={() => setIsCreatingBlog(true)}
+          >
+            <PlusIcon className="mr-2" /> New blog
+          </Button>
+        )}
       </div>
     </div>
   );

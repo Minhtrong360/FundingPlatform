@@ -1,6 +1,8 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../../../context/AuthContext";
 
 const HeroSection = () => {
+  const { user } = useAuth();
   return (
     <div className="zubuz-hero-section2">
       <div className="container">
@@ -18,11 +20,15 @@ const HeroSection = () => {
               <h1>Empower your education to the next level</h1>
               <p>
                 Our user-friendly and feature-rich LMS tool enables your
-                organization to increase your education, courses more efficiently.
+                organization to increase your education, courses more
+                efficiently.
               </p>
               <div className="zubuz-hero-btn-wrap">
-                <Link to="/sign-up" className="zubuz-default-btn pill">
-                  <span>Sign up for free</span>
+                <Link
+                  to={user ? "https://edu.beekrowd.com" : "/sign-in"}
+                  className="zubuz-default-btn pill"
+                >
+                  <span>{user ? "GO TO COURSE" : "Sign up for free"}</span>
                 </Link>
                 <Link to="/service" className="zubuz-login-btn m-0">
                   View all features

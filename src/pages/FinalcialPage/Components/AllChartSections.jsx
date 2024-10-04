@@ -631,7 +631,7 @@ const AllChartSections = ({
           </h2>
           <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
             <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
-              <div className="min-w-[10vw] w-full flex flex-row sm:!mr-0 !mr-1">
+              <div className="min-w-[9vw] w-full flex flex-row sm:!mr-0 !mr-1">
                 
                 <Select
                   value={chartStartMonth}
@@ -658,7 +658,7 @@ const AllChartSections = ({
                   </SelectContent>
                 </Select>
               </div>
-              <div className="min-w-[10vw] w-full flex flex-row sm:!ml-0 !ml-1">
+              <div className="min-w-[9vw] w-full flex flex-row sm:!ml-0 !ml-1">
                 <label
                   htmlFor="endMonthSelect"
                   className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"

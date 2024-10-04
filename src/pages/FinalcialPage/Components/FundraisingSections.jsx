@@ -674,7 +674,6 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       tempFundraisingInputs,
       numberOfMonths
     ).forEach((record) => {
-      console.log("record", record);
       const row = [record.name];
       for (let i = 1; i <= numberOfMonths; i++) {
         row.push(record[`month${i}`] || "");
@@ -836,7 +835,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         const filtered = tableData?.filter((data) =>
           data?.name?.includes(selectedFun.name)
         );
-        console.log("filtered", filtered);
+
         if (filtered) {
           totalFunding += extractData(
             filtered[0],
@@ -862,9 +861,6 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const renderValue =
     tempFundraisingInputs.find((item) => item.id == renderFundraisingForm) ||
     "all";
-
-  console.log("fundraisingInputs", fundraisingInputs);
-  console.log("tableData", tableData);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">

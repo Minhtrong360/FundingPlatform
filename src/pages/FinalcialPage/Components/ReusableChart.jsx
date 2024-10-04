@@ -49,6 +49,7 @@ const ReusableChart = ({
     },
     yaxis: {
       show: false, // Hide y-axis
+      min: 0,
       labels: {
         show: false,
         formatter: (val) => formatNumber(Math.floor(val)),

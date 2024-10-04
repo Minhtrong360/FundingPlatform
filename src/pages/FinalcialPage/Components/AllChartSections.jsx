@@ -84,11 +84,6 @@ const AllChartSections = ({
   revenue,
   numberOfMonths,
 }) => {
-  function sumArray(arr) {
-    return arr.reduce((total, num) => total + Number(num), 0);
-  }
-
-  const [selectedChart, setSelectedChart] = useState("total-revenue-chart"); // State để lưu trữ biểu đồ được chọn
   // Tính toán
   const dispatch = useDispatch();
   const { customerGrowthData, customerInputs } = useSelector(
@@ -453,11 +448,6 @@ const AllChartSections = ({
       earnings // Placeholder values
   );
 
-  // Hàm xử lý sự kiện khi giá trị của dropdown thay đổi
-  const handleChartSelect = (value) => {
-    setSelectedChart(value);
-  };
-
   const { currency } = useSelector((state) => state.durationSelect);
   const months = [
     "01",
@@ -622,6 +612,7 @@ const AllChartSections = ({
   useEffect(() => {
     setChartEndMonth(numberOfMonths);
   }, [numberOfMonths]);
+
   return (
     <>
       {/* <section className="mb-8">

@@ -776,7 +776,6 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
     }
   }, [tempRevenueData, chartStartMonth, chartEndMonth]);
 
-  console.log("revenue", revenue);
 
   const daysOptions = [0, 15, 30, 45, 60, 90];
 

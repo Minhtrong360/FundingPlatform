@@ -33,6 +33,7 @@ import { formatNumber } from "../../features/CostSlice";
 import { message, Switch } from "antd";
 import { Progress } from "../../components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
+import { useNavigate } from "react-router-dom";
 
 function Company({
   handleSubmit,
@@ -43,6 +44,8 @@ function Company({
 }) {
   const [projectImageUrl, setProjectImageUrl] = useState(formData.project_url);
   const [cardImageUrl, setCardImageUrl] = useState(formData.card_url);
+
+  const navigate = useNavigate();
 
   const handleProjectImageUpload = (event) => {
     const file = event.target.files[0];
@@ -119,8 +122,6 @@ function Company({
 
   const nextStep = () => setStep((prev) => Math.min(prev + 1, totalSteps));
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
-
-  console.log("formData.showAdditionalFields", formData.showAdditionalFields);
 
   return (
     <div className="min-h-screen flex justify-center items-center">
@@ -590,37 +591,22 @@ function Company({
               </div>
             )}
 
-            <div className="flex flex-col sm:flex-row justify-between mt-6 space-y-2 sm:space-y-0">
+            <div className="flex justify-between items-center mt-6">
               <Button
-                type="button"
-                onClick={prevStep}
-                disabled={step === 1}
                 variant="outline"
-                className="w-full sm:w-auto"
+                className="self-center"
+                onClick={() => navigate(-1)}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="mr-2 h-4 w-4"
-                >
-                  <polyline points="15 18 9 12 15 6"></polyline>
-                </svg>
-                Previous
+                Cancel
               </Button>
-              {step < totalSteps ? (
+              <div className="space-x-2 flex items-center justify-center">
                 <Button
                   type="button"
-                  onClick={nextStep}
-                  className="w-full sm:w-auto !bg-black !text-white"
+                  onClick={prevStep}
+                  disabled={step === 1}
+                  variant="outline"
+                  className="w-full sm:w-auto flex items-center"
                 >
-                  Next
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -631,20 +617,44 @@ function Company({
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="ml-2 h-4 w-4"
+                    className="mr-2 h-4 w-4"
                   >
-                    <polyline points="9 18 15 12 9 6"></polyline>
+                    <polyline points="15 18 9 12 15 6"></polyline>
                   </svg>
+                  Previous
                 </Button>
-              ) : (
-                <Button
-                  type="button"
-                  className="w-full sm:w-auto !bg-black !text-white"
-                  onClick={handleSubmit}
-                >
-                  Submit
-                </Button>
-              )}
+                {step < totalSteps ? (
+                  <Button
+                    type="button"
+                    onClick={nextStep}
+                    className="w-full sm:w-auto !bg-black !text-white flex items-center"
+                  >
+                    Next
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="ml-2 h-4 w-4"
+                    >
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    className="w-full sm:w-auto !bg-black !text-white flex items-center"
+                    onClick={handleSubmit}
+                  >
+                    Submit
+                  </Button>
+                )}
+              </div>
             </div>
           </form>
         </CardContent>

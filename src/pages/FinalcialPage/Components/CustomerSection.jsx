@@ -890,7 +890,6 @@ const CustomerSection = React.memo(
         setIsLoading(false);
       }
     };
-    console.log("customerGrowthChart", customerGrowthChart);
     useEffect(() => {
       const startIdx = chartStartMonth - 1;
       const endIdx = chartEndMonth;
@@ -1647,7 +1646,6 @@ const CustomerSection = React.memo(
             value: formatNumber(totalUsersTotal),
             change: `${totalUsersChange.toFixed(2)}`,
           },
-          { ...prevMetrics[6], value: "", change: "" },
         ]);
       } else {
         // Handle specific channel case (based on ID)
@@ -1737,7 +1735,6 @@ const CustomerSection = React.memo(
               value: formatNumber(totalUsers),
               change: `${formatNumber(totalUsersChange.toFixed(2))}`,
             },
-            { ...prevMetrics[6], value: "", change: "" },
           ]);
         }
       }

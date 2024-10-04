@@ -625,8 +625,6 @@ const PersonnelSection = ({ numberOfMonths }) => {
     }));
   }, [tempPersonnelCostData, chartStartMonth, chartEndMonth]);
 
-  console.log("personnelChart", personnelChart);
-
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const confirmDelete = () => {
@@ -641,7 +639,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
     setSelectedChart(chart);
     setIsChartModalVisible(true);
   };
-  console.log("selectedChart", selectedChart);
+
   const downloadExcel = () => {
     const workBook = XLSX.utils.book_new();
 

@@ -661,7 +661,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     setRenderCostForm(newId.toString());
   };
 
-  console.log("tempCostInput", tempCostInput);
+
 
   const removeCostInput = (id) => {
     const indexToRemove = tempCostInput.findIndex((input) => input?.id == id);
@@ -1215,7 +1215,6 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
       const filtered = filteredCostData?.filter((data) =>
         data?.costName?.includes(selectedData?.costName)
       );
-      console.log("filtered", filtered);
       if (filtered.length > 0 && filteredCostData.length > 0) {
         const costData = extractData(
           filtered[0],

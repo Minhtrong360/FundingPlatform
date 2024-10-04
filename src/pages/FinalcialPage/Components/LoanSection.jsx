@@ -894,9 +894,6 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   // Simplified useEffect for calculating metrics and filtering data
 
   useEffect(() => {
-    console.log("tempLoanInputs", tempLoanInputs);
-    console.log("filteredTableData", filteredTableData);
-
     if (renderLoanForm === "all") {
       // New logic to calculate metrics for all loans
       let totalLoans = 0;

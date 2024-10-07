@@ -559,7 +559,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     dispatch(setFundraisingTableData(tableData));
   }, []);
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+  const [chartEndMonth, setChartEndMonth] = useState(6);
 
   useEffect(() => {
     const transformedData = transformFundraisingDataForTable(

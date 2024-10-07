@@ -608,7 +608,7 @@ const AllChartSections = ({
   ];
 
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+  const [chartEndMonth, setChartEndMonth] = useState(6);
   useEffect(() => {
     setChartEndMonth(numberOfMonths);
   }, [numberOfMonths]);

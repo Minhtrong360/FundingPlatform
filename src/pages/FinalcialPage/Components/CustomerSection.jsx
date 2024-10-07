@@ -513,7 +513,7 @@ const CustomerSection = React.memo(
     const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
     const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
     const [chartStartMonth, setChartStartMonth] = useState(1);
-    const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+    const [chartEndMonth, setChartEndMonth] = useState(6);
 
     const handleChartClick = (chart, event) => {
       const toolbar = document.querySelector(".apexcharts-toolbar");
@@ -748,7 +748,7 @@ const CustomerSection = React.memo(
                 <Tooltip title={tooltipTitle} placement="topLeft">
                   <div style={cellStyle}>
                     <input
-                      className="border-white p-0 text-xs text-right w-full h-full rounded-none"
+                      className="border-white p-0 text-sm text-right w-full h-full rounded-none"
                       value={record[`month${i + 1}`]}
                       onChange={(e) => {
                         handleCustomerInputChange(

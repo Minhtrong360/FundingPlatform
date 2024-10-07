@@ -956,7 +956,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   ];
 
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+  const [chartEndMonth, setChartEndMonth] = useState(6);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">

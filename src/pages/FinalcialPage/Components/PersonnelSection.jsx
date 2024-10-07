@@ -534,7 +534,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+  const [chartEndMonth, setChartEndMonth] = useState(6);
 
   const calculatePersonnelByDepartment = () => {
     const departmentCount = tempPersonnelInputs.reduce((acc, input) => {

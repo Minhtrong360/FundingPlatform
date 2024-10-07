@@ -974,7 +974,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+  const [chartEndMonth, setChartEndMonth] = useState(6);
 
   useEffect(() => {
     const seriesData = tempCostData.map((item) => {

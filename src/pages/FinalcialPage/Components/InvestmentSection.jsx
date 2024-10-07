@@ -518,7 +518,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   });
 
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+  const [chartEndMonth, setChartEndMonth] = useState(6);
 
   useEffect(() => {
     const filteredMonths = Array.from(

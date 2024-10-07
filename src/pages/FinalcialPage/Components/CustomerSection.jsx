@@ -556,7 +556,7 @@ const CustomerSection = React.memo(
         customersPerMonth: 100,
         growthPerMonth: 2,
         customerGrowthFrequency: "Monthly",
-        channelName: "New channel",
+        channelName: `New channel ${tempCustomerInputs?.length + 1}`,
         beginMonth: 1,
         endMonth: 15,
         beginCustomer: 0,
@@ -573,6 +573,7 @@ const CustomerSection = React.memo(
         setRenderCustomerForm(newId.toString()); // Cập nhật renderCustomerForm ngay sau khi inputs được cập nhật
         return updatedInputs;
       });
+      message.success("Add new customer successfully.");
     };
 
     const removeCustomerInput = (id) => {
@@ -1011,6 +1012,9 @@ const CustomerSection = React.memo(
       }
 
       const yearlyGrowthRates = yearlyTotalData.map((total, index, arr) => {
+        console.log("yearlyTotalData", yearlyTotalData);
+        console.log("total", total);
+        console.log("arr[index - 1]", arr[index - 1]);
         if (index === 0) return 0;
         return ((total - arr[index - 1]) / arr[index - 1]) * 100;
       });
@@ -1290,9 +1294,9 @@ const CustomerSection = React.memo(
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
-                    { length: yearlyGrowthRates.length },
+                    { length: yearlyGrowthRates.length - 1 },
                     (_, i) => {
-                      const year = startYear + i;
+                      const year = startYear + i + 1;
                       return `${year}`;
                     }
                   ),
@@ -1300,7 +1304,7 @@ const CustomerSection = React.memo(
                 yaxis: {
                   min: 0, // Đặt giá trị tối thiểu của trục Oy là 0
                   labels: {
-                    formatter: (value) => `${value.toFixed(0)}`,
+                    formatter: (value) => `${formatNumber(value.toFixed(0))}`,
                     style: {
                       fontFamily: "Raleway Variable, sans-serif",
                       fontWeight: 500,
@@ -1312,7 +1316,7 @@ const CustomerSection = React.memo(
               series: [
                 {
                   name: "Growth Rate (%)",
-                  data: yearlyGrowthRates,
+                  data: yearlyGrowthRates?.slice(1, yearlyGrowthRates.length),
                 },
               ],
             },
@@ -2329,7 +2333,8 @@ const CustomerSection = React.memo(
             }}
             centered={true}
           >
-            Are you sure you want to delete it?
+            Are you sure you want to delete{" "}
+            <span className="text-[#f5222d]">{renderValue?.channelName}</span>?
           </Modal>
         )}
       </div>

@@ -305,7 +305,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
     const newCustomer = {
       id: newId,
-      purchaseName: "New investment",
+      purchaseName: `New investment ${tempInvestmentInputs?.length + 1}`,
       assetCost: 0,
       quantity: 1,
       purchaseMonth: 1,
@@ -314,6 +314,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     };
     setTempInvestmentInputs([...tempInvestmentInputs, newCustomer]);
     setRenderInvestmentForm(newId.toString());
+    message.success("Add new investment successfully.");
   };
 
   const removeInvestmentInput = (id) => {
@@ -1509,7 +1510,8 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           }}
           centered={true}
         >
-          Are you sure you want to delete it?
+          Are you sure you want to delete{" "}
+          <span className="text-[#f5222d]">{renderValue?.purchaseName}</span>?
         </Modal>
       )}
     </div>

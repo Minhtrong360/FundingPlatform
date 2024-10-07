@@ -326,7 +326,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
     const newPersonnel = {
       id: newId,
-      jobTitle: "New position",
+      jobTitle: `New position ${tempPersonnelInputs?.length + 1}`,
       department: "General",
       salaryPerMonth: 0,
       increasePerYear: 10,
@@ -337,6 +337,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
     };
     setTempPersonnelInputs([...tempPersonnelInputs, newPersonnel]);
     setRenderPersonnelForm(newId.toString());
+    message.success("Add new position successfully.");
   };
 
   const removePersonnelInput = (id) => {
@@ -783,12 +784,20 @@ const PersonnelSection = ({ numberOfMonths }) => {
 
   // Updated useEffect for calculating metrics
   useEffect(() => {
+    // Filter out department rows and exclude the "Total" row
     const filteredPersonnelData = personnelCostTableData?.filter(
       (row) => !row.isDepartment && row.key !== "Total"
     );
 
-    const numberOfPersonnel = filteredPersonnelData.length;
+    let numberOfPersonnel = 0;
+
+    // When renderPersonnelForm is "all", sum up the numberOfHires for all items in tempPersonnelInputs
     if (renderPersonnelForm === "all") {
+      numberOfPersonnel = tempPersonnelInputs.reduce(
+        (acc, input) => acc + input.numberOfHires,
+        0
+      );
+
       // Calculate total cost across all months (sum up 'Total' row values)
       const totalCostRow = personnelCostTableData?.find(
         (row) => row.key === "Total"
@@ -839,45 +848,51 @@ const PersonnelSection = ({ numberOfMonths }) => {
         },
       ]);
     } else {
-      // Handle specific channel case (based on ID)
+      // Handle specific personnel case (based on ID)
       const selectedData = tempPersonnelInputs.find(
         (input) => input.id == renderPersonnelForm
       );
 
-      const filtered = filteredPersonnelData?.filter((data) =>
-        data?.jobTitle?.includes(selectedData?.jobTitle)
-      );
-      if (filtered.length > 0 && filteredPersonnelData.length > 0) {
-        const costData = extractData(
-          filtered[0],
-          "month",
-          chartStartMonth,
-          chartEndMonth
-        );
-        const average = costData / (chartEndMonth - chartStartMonth + 1);
-        const costDataChange = calculateChange(
-          parseNumber(filtered[0][`month${chartStartMonth}`]),
-          parseNumber(filtered[0][`month${chartEndMonth}`])
+      if (selectedData) {
+        // Set numberOfPersonnel to the numberOfHires of the selected item
+        numberOfPersonnel = selectedData.numberOfHires;
+
+        const filtered = filteredPersonnelData?.filter((data) =>
+          data?.jobTitle?.includes(selectedData?.jobTitle)
         );
 
-        // Update metrics for "all"
-        setMetrics((prevMetrics) => [
-          {
-            ...prevMetrics[0],
-            value: numberOfPersonnel,
-            change: "",
-          },
-          {
-            ...prevMetrics[1],
-            value: formatNumber(costData.toFixed(2)),
-            change: formatNumber(costDataChange?.toFixed(2)),
-          },
-          {
-            ...prevMetrics[2],
-            value: formatNumber(average.toFixed(2)),
-            change: "",
-          },
-        ]);
+        if (filtered.length > 0) {
+          const costData = extractData(
+            filtered[0],
+            "month",
+            chartStartMonth,
+            chartEndMonth
+          );
+          const average = costData / (chartEndMonth - chartStartMonth + 1);
+          const costDataChange = calculateChange(
+            parseNumber(filtered[0][`month${chartStartMonth}`]),
+            parseNumber(filtered[0][`month${chartEndMonth}`])
+          );
+
+          // Update metrics for the selected personnel
+          setMetrics((prevMetrics) => [
+            {
+              ...prevMetrics[0],
+              value: numberOfPersonnel,
+              change: "",
+            },
+            {
+              ...prevMetrics[1],
+              value: formatNumber(costData.toFixed(2)),
+              change: formatNumber(costDataChange?.toFixed(2)),
+            },
+            {
+              ...prevMetrics[2],
+              value: formatNumber(average.toFixed(2)),
+              change: "",
+            },
+          ]);
+        }
       }
     }
   }, [
@@ -1312,7 +1327,8 @@ const PersonnelSection = ({ numberOfMonths }) => {
           }}
           centered={true}
         >
-          Are you sure you want to delete it?
+          Are you sure you want to delete{" "}
+          <span className="text-[#f5222d]">{renderValue?.jobTitle}</span>?
         </Modal>
       )}
     </div>

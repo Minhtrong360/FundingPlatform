@@ -497,7 +497,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
     const newChannel = {
       id: newId,
-      productName: "New channel",
+      productName: `New product ${tempChannelInputs?.length + 1}`,
       price: 3,
       multiples: 1,
       deductionPercentage: 0,
@@ -511,6 +511,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
     };
     setTempChannelInputs([...tempChannelInputs, newChannel]);
     setRenderChannelForm(newId.toString());
+    message.success("Add new product successfully.");
   };
 
   const duplicateChannelInput = () => {
@@ -775,7 +776,6 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
       }));
     }
   }, [tempRevenueData, chartStartMonth, chartEndMonth]);
-
 
   const daysOptions = [0, 15, 30, 45, 60, 90];
 
@@ -1642,7 +1642,12 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
           }}
           centered={true}
         >
-          Are you sure you want to delete it?
+          Are you sure you want to delete{" "}
+          <span className="text-[#f5222d]">
+            {`${renderValue?.productName} -
+              ${renderValue?.selectedChannel?.channelName}`}
+          </span>
+          ?
         </Modal>
       )}
     </div>

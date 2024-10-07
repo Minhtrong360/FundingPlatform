@@ -646,7 +646,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
     const newCustomer = {
       id: newId,
-      costName: "New cost",
+      costName: `New cost ${tempCostInput?.length + 1}`,
       costGroup: "Administrator",
       costValue: 1000,
       growthPercentage: 0,
@@ -659,9 +659,9 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     };
     setTempCostInput([...tempCostInput, newCustomer]);
     setRenderCostForm(newId.toString());
+
+    message.success("Add new cost successfully.");
   };
-
-
 
   const removeCostInput = (id) => {
     const indexToRemove = tempCostInput.findIndex((input) => input?.id == id);
@@ -1633,7 +1633,8 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
           }}
           centered={true}
         >
-          Are you sure you want to delete it?
+          Are you sure you want to delete{" "}
+          <span className="text-[#f5222d]">{renderValue?.costName}</span>?
         </Modal>
       )}
     </div>

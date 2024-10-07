@@ -299,33 +299,6 @@ const FundraisingInputForm = ({
           )}
         </Button>
       </div>
-      <Modal
-        zIndex={42424244}
-        title="Confirm Delete"
-        open={isDeleteModalOpen}
-        onOk={confirmDelete}
-        onCancel={() => setIsDeleteModalOpen(false)}
-        okText="Delete"
-        cancelText="Cancel"
-        cancelButtonProps={{
-          style: {
-            borderRadius: "0.375rem",
-            cursor: "pointer",
-          },
-        }}
-        okButtonProps={{
-          style: {
-            background: "#f5222d",
-            borderColor: "#f5222d",
-            color: "#fff",
-            borderRadius: "0.375rem",
-            cursor: "pointer",
-          },
-        }}
-        centered={true}
-      >
-        Are you sure you want to delete it?
-      </Modal>
     </section>
   );
 };
@@ -345,7 +318,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
     const newFundraising = {
       id: newId,
-      name: "Owner",
+      name: `New funding ${tempFundraisingInputs?.length + 1}`,
       fundraisingAmount: 0,
       fundraisingType: "Common Stock",
       fundraisingBeginMonth: 1,
@@ -353,6 +326,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     };
     setTempFundraisingInputs([...tempFundraisingInputs, newFundraising]);
     setRenderFundraisingForm(newId.toString());
+    message.success("Add new funding successfully.");
   };
   const removeFundraisingInput = (id) => {
     const indexToRemove = tempFundraisingInputs.findIndex(
@@ -1163,6 +1137,35 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           />
         </div>
       </div>
+
+      <Modal
+        zIndex={42424244}
+        title="Confirm Delete"
+        open={isDeleteModalOpen}
+        onOk={confirmDelete}
+        onCancel={() => setIsDeleteModalOpen(false)}
+        okText="Delete"
+        cancelText="Cancel"
+        cancelButtonProps={{
+          style: {
+            borderRadius: "0.375rem",
+            cursor: "pointer",
+          },
+        }}
+        okButtonProps={{
+          style: {
+            background: "#f5222d",
+            borderColor: "#f5222d",
+            color: "#fff",
+            borderRadius: "0.375rem",
+            cursor: "pointer",
+          },
+        }}
+        centered={true}
+      >
+        Are you sure you want to delete{" "}
+        <span className="text-[#f5222d]">{renderValue?.name}</span>?
+      </Modal>
 
       <div className="xl:!hidden !block">
         <FloatButton

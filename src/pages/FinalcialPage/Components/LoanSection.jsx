@@ -296,7 +296,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
     const newLoan = {
       id: newId,
-      loanName: "New loan",
+      loanName: `New loan ${tempLoanInputs?.length + 1}`,
       loanAmount: "0",
       interestRate: "0",
       loanBeginMonth: 1,
@@ -304,6 +304,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     };
     setTempLoanInputs([...tempLoanInputs, newLoan]);
     setRenderLoanForm(newId.toString());
+    message.success("Add new loan successfully.");
   };
 
   const removeLoanInput = (id) => {
@@ -1546,7 +1547,8 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           }}
           centered={true}
         >
-          Are you sure you want to delete it?
+          Are you sure you want to delete{" "}
+          <span className="text-[#f5222d]">{renderValue?.loanName}</span>?
         </Modal>
       )}
     </div>

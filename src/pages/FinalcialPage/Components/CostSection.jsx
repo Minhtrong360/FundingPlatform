@@ -1266,7 +1266,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
             >
               <SelectTrigger className="w-full md:w-auto min-w-[10rem]">
                 <SelectValue placeholder="Offline">
-                  {renderValue.costName ? renderValue.costName : "All"}
+                  {renderValue?.costName}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent className="w-full md:w-auto min-w-[10rem]">

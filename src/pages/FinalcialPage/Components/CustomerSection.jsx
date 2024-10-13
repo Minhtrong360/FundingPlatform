@@ -1772,9 +1772,7 @@ const CustomerSection = React.memo(
               >
                 <SelectTrigger className="w-full md:w-auto min-w-[10rem]">
                   <SelectValue placeholder="Offline">
-                    {renderValue?.channelName
-                      ? renderValue?.channelName
-                      : "All"}
+                    {renderValue?.channelName}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent className="w-full md:w-auto min-w-[10rem]">

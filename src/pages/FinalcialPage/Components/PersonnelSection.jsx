@@ -923,7 +923,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
             >
               <SelectTrigger className="w-full md:w-auto min-w-[10rem]">
                 <SelectValue placeholder="Offline">
-                  {renderValue.jobTitle ? renderValue.jobTitle : "All"}
+                  {renderValue?.jobTitle}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent className="w-full md:w-auto min-w-[10rem]">

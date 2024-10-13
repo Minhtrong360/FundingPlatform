@@ -106,7 +106,7 @@ export const calculateChannelRevenue =
     let receivablesByChannelAndProduct = {};
 
     channelInputs.forEach((channel) => {
-      if (channel.selectedChannel.channelName && channel.productName) {
+      if (channel.selectedChannel.channelName && channel.id) {
         const channelProductKey = `${channel.selectedChannel.channelName} - ${channel.productName}`;
         const revenueArray = Array(numberOfMonths).fill(0);
         const revenueDeductionArray = Array(numberOfMonths).fill(0);

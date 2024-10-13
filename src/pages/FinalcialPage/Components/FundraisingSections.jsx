@@ -853,7 +853,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             >
               <SelectTrigger className="w-full md:w-auto min-w-[10rem]">
                 <SelectValue placeholder="Offline">
-                  {renderValue.name ? renderValue.name : "All"}
+                  {renderValue?.name}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent className="w-full md:w-auto min-w-[10rem]">

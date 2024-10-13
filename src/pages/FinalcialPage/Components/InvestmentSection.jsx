@@ -1045,7 +1045,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             >
               <SelectTrigger className="w-full md:w-auto min-w-[10rem]">
                 <SelectValue placeholder="Offline">
-                  {renderValue.purchaseName ? renderValue.purchaseName : "All"}
+                  {renderValue?.purchaseName}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent className="w-full md:w-auto min-w-[10rem]">

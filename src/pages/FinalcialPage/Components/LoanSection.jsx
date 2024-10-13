@@ -297,8 +297,8 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     const newLoan = {
       id: newId,
       loanName: `New loan ${tempLoanInputs?.length + 1}`,
-      loanAmount: "0",
-      interestRate: "0",
+      loanAmount: 300,
+      interestRate: 1,
       loanBeginMonth: 1,
       loanEndMonth: 36,
     };
@@ -974,10 +974,15 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       const selectedLoan = tempLoanInputs.find(
         (input) => input.id == renderLoanForm
       );
+      console.log("filteredTableData", filteredTableData);
       if (selectedLoan) {
-        const filtered = filteredTableData?.filter((data) =>
-          data?.key?.includes(selectedLoan.loanName)
-        );
+        const filtered = filteredTableData?.filter((data) => {
+          // Kiểm tra nếu key là chuỗi thì mới gọi includes
+          return (
+            typeof data?.key === "string" &&
+            data?.key?.includes(selectedLoan?.loanName)
+          );
+        });
 
         let totalPayment = 0;
         let totalPrincipalPaid = 0;
@@ -1070,7 +1075,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             >
               <SelectTrigger className="w-full md:w-auto min-w-[10rem]">
                 <SelectValue placeholder="Offline">
-                  {renderValue.loanName ? renderValue.loanName : "All"}
+                  {renderValue?.loanName}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent className="w-full md:w-auto min-w-[10rem]">
@@ -1368,7 +1373,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                     </p>
                   </div>
                 ) : (
-                  <div className="ml-2">
+                  <div className="ml-2" key={index}>
                     <h5 className="font-semibold text-sm mb-2">
                       {`${String.fromCharCode(65 + index)}. ${series.options.title.text}`}
                     </h5>

@@ -935,11 +935,15 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
 
   // Extract and sum data for a particular key over a range of months
   const extractData = (data, keyPrefix, startMonth, endMonth) => {
+    if (!data || Object.keys(data).length === 0) {
+      return 0; // Trả về giá trị mặc định nếu data không hợp lệ
+    }
+
     return Object.keys(data)
       .filter((key) => key.startsWith(keyPrefix))
       .slice(startMonth - 1, endMonth)
       .reduce(
-        (sum, monthKey) => sum + parseNumber(data[monthKey].replace(",", "")),
+        (sum, monthKey) => sum + parseNumber(data[monthKey]?.replace(",", "")),
         0
       );
   };
@@ -1150,6 +1154,9 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
     tempChannelInputs,
   ]);
 
+  console.log("tempChannelInputs", tempChannelInputs);
+  console.log("revenueTableData", revenueTableData);
+
   const renderValue =
     tempChannelInputs.find((item) => item.id == renderChannelForm) || "all";
 
@@ -1170,14 +1177,12 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
             >
               <SelectTrigger className="w-full md:w-auto min-w-[10rem]">
                 <SelectValue placeholder="Offline">
-                  {renderValue?.productName
-                    ? `${renderValue?.productName} - ${
-                        channelNames?.find(
-                          (channel) =>
-                            channel?.id === renderValue?.selectedChannel?.id
-                        )?.channelName
-                      }`
-                    : "All"}
+                  {`${renderValue?.productName} - ${
+                    channelNames?.find(
+                      (channel) =>
+                        channel?.id === renderValue?.selectedChannel?.id
+                    )?.channelName
+                  }`}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
